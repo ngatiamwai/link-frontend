@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="icon" href="./Images/header logo.png" type="image/x-icon" style="height: 2vh;">
+    <link rel="stylesheet" href="style.css">
+    <title> L&T: Post</title>
+</head>
+<header>
+    <div class="header1">
+        <img class="logo" src="./Images/logo.png" alt="logo">
+        <div class="header2">
+            <div class="headerHome">
+                <img src="./Images/material-symbols_home-outline.png" alt="">
+                <p>
+                    <a href="./homeApp.html">Home</a>
+                </p>
+            </div>
+            <div class="headerHome">
+                <img src="./Images/material-symbols_post-add.png" alt="">
+                <p>
+                    <a href="./post.html">Post</a>
+                </p>
+            </div>
+        </div>
+        <input type="text" placeholder="search" class="search">
+    </div>
+    <div class="header3">
+        <div class="dropdown">
+            <button class="dropbtn">Profile</button>
+            <div class="dropdown-content">
+                <a href="account.html">Account</a>
+                <a href="updateProfile.html">Update Profile</a>
+                <a href="login.html" onclick="window.history.back()">Logout</a>
+            </div>
+        </div>
+    </div>
+</header>
+<body>
+<div class="postSection">
+    <div class="post">
+        <form class="registerForm" action="">
+            <h2>Post</h2>
+            <p class="errorMsg"></p>
+            <div class="postForm">
+                <textarea name="Upload Post" class="uploadPost"  id="postContent" cols="40" rows="10" placeholder="Upload Post"></textarea>
+                <div class="imagePreview" id="imagePreview"></div>
+                <label for="upload" class="upload-button">
+                    <img src="./Images/material-symbols_image-outline.png" alt="">
+                </label>
+                <input type="file" class="uploadImage" id="upload" style="display: none;">
+            </div>
+            <button class="submit" type="submit">Post</button>
+        </form>
+    </div>
+</div>
+</body>
+    <script src="./post.js" defer></script>
+</html>

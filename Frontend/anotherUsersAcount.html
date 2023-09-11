@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="icon" href="./Images/header logo.png" type="image/x-icon" style="height: 2vh;">
+    <link rel="stylesheet" href="style.css">
+    <title> L&T: Your Account</title>
+</head>
+<header>
+    <div class="header1">
+        <img class="logo" src="./Images/logo.png" alt="logo">
+        <div class="header2">
+            <div class="headerHome">
+                <img src="./Images/material-symbols_home-outline.png" alt="">
+                <p>
+                    <a href="./homeApp.html">Home</a>
+                </p>
+            </div>
+            <div class="headerHome">
+                <img src="./Images/material-symbols_post-add.png" alt="">
+                <p>
+                    <a href="./post.html">Post</a>
+                </p>
+            </div>
+        </div>
+        <input type="text" placeholder="search" class="search">
+    </div>
+    <div class="header3">
+        <div class="dropdown">
+            <button class="dropbtn">Profile</button>
+            <div class="dropdown-content">
+                <a href="account.html">Account</a>
+                <a href="updateProfile.html">Update Profile</a>
+                <a href="login.html" onclick="window.history.back()">Logout</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<body>
+    <div class="homeSection">
+        <div class="postSection">
+            <div class="post">
+                <div class="home">
+                    <div class="profilePic">
+
+                    </div>
+                    <div class="profilePic">
+                        <h3>
+                            <a href="#" class="followersBtn">11 Followers</a>
+                            <a href="#" class="followingBtn">11 Following</a>
+                        </h3>
+                    </div>
+                    <div class="profilePic">
+                        <h2>
+                            <p><a href="#" class="postsBtn">Posts</a></p>
+                            <p><a href="#" class="commentsBtn">Comments</a></p>
+                            <p><a href="#" class="likesBtn">Likes</a></p>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="postsContainer">
+                <div class="postContainer">
+
+                </div>
+            </div>
+            <div class="postContainer">
+                <div class="commentContainer">
+
+                </div>
+            </div>
+
+            <div class="likesContainer">
+
+            </div>
+
+            <div class="followersContainer">
+            <div class="post">
+                
+                </div>
+
+            </div>
+            <div class="followingContainer">
+                <div class="post">
+                    
+                    </div>
+    
+                </div>
+            <!-- <div class="post">
+                <div class="home">
+                    <div class="followingContainer">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Profile Picture</th>
+                                    <th>Profile Picture</th>
+                                    <th>Profile Picture</th>
+                                    <th>Profile Picture</th>
+                                </tr>
+                            </thead>
+                            <tbody style="margin-top: 1vh;">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div> -->
+
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./anotherUsersAccount.js" defer></script>
+
+</html>

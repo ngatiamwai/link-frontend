@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="icon" href="./Images/header logo.png" type="image/x-icon" style="height: 2vh;">
+    <link rel="stylesheet" href="style.css">
+    <title> L&T: Comments</title>
+</head>
+<header>
+    <div class="header1">
+        <img class="logo" src="./Images/logo.png" alt="logo">
+        <div class="header2">
+            <div class="headerHome">
+                <img src="./Images/material-symbols_home-outline.png" alt="">
+                <p>
+                    <a href="./homeApp.html">Home</a>p
+                </p>
+            </div>
+            <div class="headerHome">
+                <img src="./Images/material-symbols_post-add.png" alt="">
+                <p>
+                    <a href="./post.html">Post</a>
+                </p>
+            </div>
+        </div>
+        <input type="text" placeholder="search" class="search">
+    </div>
+    <div class="header3">
+        <div class="dropdown">
+            <button class="dropbtn">Profile</button>
+            <div class="dropdown-content">
+                <a href="account.html">Account</a>
+                <a href="updateProfile.html">Update Profile</a>
+                <a href="login.html" onclick="window.history.back()">Logout</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<body>
+    <h4>
+        <a href="./homeApp.html" class="backBtn">
+          <img src="./Images/material-symbols_arrow-back.png" alt="">
+        </a>
+        Comments
+        <p class="errorMsg"></p>
+      </h4>
+      
+<div class="postSection">
+    <div class="postContainer">
+                
+    </div>
+
+    <div class="comment">
+        <form action="" class="registerForm">
+            <div class="errorMsg"></div>
+            <div class="comment-input-container">
+                <input type="text" placeholder="Add a comment" class="commentText">
+                <label for="upload" class="upload-button">
+                    <img src="./Images/material-symbols_image-outline.png" alt="">
+                </label>
+                <input type="file" id="upload" style="display: none;" class="commentPic">
+            </div>
+            <div class="imagePreview" id="imagePreview"></div>
+            <button class="postBtn">Comment</button>
+        </form>
+    </div>
+
+    <div class="commentContainer">
+                
+    </div>
+
+    <!-- <div class="post">
+        <div class="home">
+            <div class="profilePic">
+                <div> <img src="./Images/lec 3.jpeg" alt=""> </div>
+                <div class="profileName">
+                    <h5>Ngatia Mwai</h5>
+                    <p>@ngatiamwai</p>
+                </div>
+            </div>
+            <div class="postContent">
+                <img src="./Images/building-patient-doctor-trust.jpg" alt="">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a dui vel turpis tincidunt sollicitudin.
+                    Quisque ut tellus non mi cursus lacinia a ut neque. Sed dictum, velit nec interdum congue, dolor purus
+                    mattis erat, sed vestibulum felis odio sed libero. Vestibulum vel justo vel ex scelerisque iaculis.
+                    Aliquam ultrices convallis quam, vel egestas elit interdum sit amet. Pellentesque habitant morbi
+                    tristique senectus et netus et malesuada fames ac turpis egestas. Fusce vel sapien nec neque bibendum
+                    condimentum. Nulla facilisi. Sed lacinia, nisi in vehicula cursus, nulla libero faucibus nunc, sit amet
+                    malesuada neque neque ac elit. Curabitur gravida libero nec tortor blandit, at faucibus est laoreet. In bibendum feugiat dui, nec
+                    hendrerit quam feugiat nec. Aliquam sit amet dictum metus, vel imperdiet elit. Maecenas placerat enim
+                </p>
+            </div>
+            <div class="reactions">
+                <a href="./comments.html">
+                    <img src="./Images/ei_comment.png" alt="comment">
+                </a>
+                <img src="./Images/iconamoon_like-thin.png" alt="like">
+            </div>
+        </div>
+    </div>
+    <div class="post">
+        <div class="home">
+            <div class="profilePic">
+                <div> <img src="./Images/lec 3.jpeg" alt=""> </div>
+                <div class="profileName">
+                    <h5>Ngatia Mwai</h5>
+                    <p>@ngatiamwai</p>
+                </div>
+            </div>
+            <div class="postContent">
+                !-- <img src="./Images/building-patient-doctor-trust.jpg" alt=""> --
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a dui vel turpis tincidunt sollicitudin.
+                    Quisque ut tellus non mi cursus lacinia a ut neque. Sed dictum, velit nec interdum congue, dolor purus
+                    mattis erat, sed vestibulum felis odio sed libero. Vestibulum vel justo vel ex scelerisque iaculis.
+                    Aliquam ultrices convallis quam, vel egestas elit interdum sit amet. Pellentesque habitant morbi
+                    tristique senectus et netus et malesuada fames ac turpis egestas. Fusce vel sapien nec neque bibendum
+                    condimentum. Nulla facilisi. Sed lacinia, nisi in vehicula cursus, nulla libero faucibus nunc, sit amet
+                    malesuada neque neque ac elit. Curabitur gravida libero nec tortor blandit, at faucibus est laoreet. In bibendum feugiat dui, nec
+                    hendrerit quam feugiat nec. Aliquam sit amet dictum metus, vel imperdiet elit. Maecenas placerat enim
+                </p>
+            </div>
+            <div class="reactions">
+                <a href="./comments.html">
+                    <img src="./Images/ei_comment.png" alt="comment">
+                </a>
+                <img src="./Images/iconamoon_like-thin.png" alt="like">
+            </div>
+        </div>
+    </div>
+    <div class="post">
+        <div class="home">
+            <div class="profilePic">
+                <div> <img src="./Images/lec 3.jpeg" alt=""> </div>
+                <div class="profileName">
+                    <h5>Ngatia Mwai</h5>
+                    <p>@ngatiamwai</p>
+                </div>
+            </div>
+            <div class="postContent">
+                <img src="./Images/building-patient-doctor-trust.jpg" alt="">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a dui vel turpis tincidunt sollicitudin.
+                    Quisque ut tellus non mi cursus lacinia a ut neque. Sed dictum, velit nec interdum congue, dolor purus
+                    mattis erat, sed vestibulum felis odio sed libero. Vestibulum vel justo vel ex scelerisque iaculis.
+                    Aliquam ultrices convallis quam, vel egestas elit interdum sit amet. Pellentesque habitant morbi
+                    tristique senectus et netus et malesuada fames ac turpis egestas. Fusce vel sapien nec neque bibendum
+                    condimentum. Nulla facilisi. Sed lacinia, nisi in vehicula cursus, nulla libero faucibus nunc, sit amet
+                    malesuada neque neque ac elit. Curabitur gravida libero nec tortor blandit, at faucibus est laoreet. In bibendum feugiat dui, nec
+                    hendrerit quam feugiat nec. Aliquam sit amet dictum metus, vel imperdiet elit. Maecenas placerat enim
+                </p>
+            </div>
+            <div class="reactions">
+                <a href="./comments.html">
+                    <img src="./Images/ei_comment.png" alt="comment">
+                </a>
+                <img src="./Images/iconamoon_like-thin.png" alt="like">
+            </div>
+        </div>
+    </div> -->
+</div>
+</body>
+<script src="./comments.js" defer></script>
+</html>
