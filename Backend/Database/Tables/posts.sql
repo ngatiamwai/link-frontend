@@ -6,8 +6,6 @@ CREATE TABLE posts(
     postPic VARCHAR (200),
     updated_at DATETIME,
     userId VARCHAR(200),
-    -- name VARCHAR(255),
-    -- username VARCHAR(100),
     FOREIGN KEY (userId) REFERENCES userTable(id) ON UPDATE CASCADE ON DELETE CASCADE,
     -- FOREIGN KEY (name, username) REFERENCES userTable(name, username) ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -16,4 +14,14 @@ BEGIN CATCH
 THROW 50001, 'Error occured when creating post table', 1 ;
 END CATCH
 
+
 SELECT * FROM posts
+
+BEGIN TRY
+ALTER TABLE posts
+ADD numComments INT DEFAULT 0, -- Default value is 0
+    numLikes INT DEFAULT 0;     -- Default value is 0
+END TRY
+BEGIN CATCH
+THROW 50002, 'Error occurred when altering posts table', 1;
+END CATCH

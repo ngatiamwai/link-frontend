@@ -8,8 +8,8 @@ dotenv.config();
 const createComment = async (req, res, next) => {
   try {
     const commentId = v4();
-    const {userId, postId} = req.params
-    const { commentText, commentPic  } = req.body;
+    const { userId, postId } = req.params;
+    const { commentText, commentPic } = req.body;
 
     if (!commentText || !userId || !postId) {
       return res.status(400).json({
@@ -28,18 +28,19 @@ const createComment = async (req, res, next) => {
 
     // Insert the comment into the comments table
     const result = await request.query(`
-      INSERT INTO comments (commentId, commentText, commentPic, userId, postId)
-      VALUES (@commentId, @commentText, @commentPic, @userId, @postId)
+      EXEC createComment @commentId, @commentText, @commentPic, @userId, @postId
     `);
 
-    if (result.rowsAffected[0] == 1) {
+    if (result.returnValue === 0) {
       return res.status(200).json({ message: 'Comment uploaded successfully' });
     } else {
       return res.status(400).json({ message: 'Comment upload failed' });
     }
   } catch (error) {
     console.error('Error creating comment:', error);
-    return res.status(500).json({ error: `An error occurred while creating the comment: ${error.message}` });
+    return res.status(500).json({
+      error: `An error occurred while creating the comment: ${error.message}`,
+    });
   }
 };
 
@@ -92,35 +93,30 @@ const allCommentsByuserId = async (req, res) => {
 //Delete comment
 const deleteComment = async (req, res) => {
   try {
-    
-    const { commentId, userId } = req.params; // Get commentId and userId from route parameters
+    const { commentId } = req.params; // Get commentId from route parameters
 
-    console.log('commentId:', commentId);
-    console.log('userId:', userId);
-    
     const pool = await mssql.connect(sqlConfig);
 
-    // Corrected SQL DELETE statement
-    const query = `DELETE FROM comments WHERE commentId = @commentId`;
+    // Use input only for commentId
+    const query = `EXEC DeleteComment @commentId`;
 
-    // Use input for both commentId and userId
     const result = await pool
       .request()
       .input('commentId', mssql.VarChar, commentId)
-      .input('userId', mssql.VarChar, userId)
       .query(query);
 
     // Check if any rows were affected to determine if the comment was deleted
-    if (result.rowsAffected[0] == 0) {
+    if (result.returnValue === 0) {
+      return res.status(200).json({ message: 'Comment deleted successfully' });
+    } else {
       return res.status(404).json({ error: 'Comment not found or you do not have permission to delete it.' });
     }
-
-    return res.status(200).json({ message: 'Comment deleted successfully' });
   } catch (error) {
     console.error('Error deleting comment by commentId:', error);
     return res.status(500).json({ error: 'An error occurred while deleting the comment.' });
   }
 };
+
 
 
 const subComment = async (req, res) => {

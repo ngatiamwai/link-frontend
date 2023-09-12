@@ -1,3 +1,91 @@
+// Function to like a post
+const token = localStorage.token
+
+function likePost(postId, userId, token) {
+  const axiosConfig = {
+      headers: {
+          'Content-Type': 'application/json',
+          'token': token
+      }
+  };
+
+  axios.get(`http://localhost:5000/like/likepost/${postId}/${userId}`, axiosConfig)
+      .then((response) => {
+          console.log('Post liked successfully:', response.data);
+          // You can update your UI here to reflect that the post is liked.
+          updateLikeCount(postId, userId, token);
+      })
+      .catch((error) => {
+          console.error('Error liking the post:', error);
+      });
+}
+
+// Function to unlike a post
+function unlikePost(postId, userId, token) {
+  const axiosConfig = {
+      headers: {
+          'Content-Type': 'application/json',
+          'token': token
+      }
+  };
+
+  axios.delete(`http://localhost:5000/like/unlikepost/${postId}/${userId}`, axiosConfig)
+      .then((response) => {
+          console.log('Post unliked successfully:', response.data);
+          // You can update your UI here to reflect that the post is unliked.
+          updateLikeStatus(postId, false); // Set liked status to false
+          updateLikeCount(postId, userId, token);
+      })
+      .catch((error) => {
+          console.error('Error unliking the post:', error);
+      });
+}
+
+// Function to update the like count for a post
+function updateLikeCount(postId, userId, token) {
+  const axiosConfig = {
+      headers: {
+          'Content-Type': 'application/json',
+          'token': token
+      }
+  };
+
+  axios.get(`http://localhost:5000/like/getlikecount/${postId}`, axiosConfig)
+      .then((response) => {
+          const likeCount = response.data.count;
+          // Update the UI to display the like count for the post
+          const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+          if (postElement) {
+              const likeCountElement = postElement.querySelector('.likeCount');
+              if (likeCountElement) {
+                  likeCountElement.textContent = `${likeCount} Likes`;
+              }
+          }
+      })
+      .catch((error) => {
+          console.error('Error fetching like count:', error);
+      });
+}
+
+// Add event listener to handle liking/unliking when the "like" element is clicked
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('like')) {
+      const postId = e.target.dataset.postId;
+      const userId = e.target.dataset.userId;
+      const isLiked = e.target.classList.contains('liked');
+      const token = localStorage.token; // Replace with your actual token
+
+      if (isLiked) {
+          // Unlike the post if it's already liked
+          unlikePost(postId, userId, token);
+      } else {
+          // Like the post if it's not liked yet
+          likePost(postId, userId, token);
+      }
+  }
+});
+
+
 // Fetch all posts
 axios
   .get('http://localhost:5000/posts/allPosts')
@@ -25,6 +113,14 @@ axios
 
               // Create a unique container for each post with postId as the identifier
               postElement.dataset.postId = post.postId;
+              postElement.dataset.id = user.id
+
+              const updatedAt = new Date(post.updated_at);
+
+// Format the time and date strings
+const timeString = updatedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+const dateString = updatedAt.toLocaleDateString();
+
 
               // Create the post content without the image if post.postPic is not available
               let postContent = `
@@ -35,15 +131,21 @@ axios
                     <h5><a href="./anotherUsersAcount.html?id=${user.id}" class="userAccountBtn">${user.name}</a></h5>
                     <p>@${user.username}</p>
                     </div>
+                    <div class="profileName" >
+                    <div style="font-size:8px; color: rgba(0, 0, 0, 0.5) ">${timeString} </div>
+                    <div style="font-size:8px; color: rgba(0, 0, 0, 0.5) ">${dateString}</div>
+                    </div>
                   </div>
+                  
                   <div class="postContent">
                     <p>${post.postName}</p>
                   </div>
                   <div class="reactions">
+                  ${post.numComments}
                     <a href="#" class="commentLink"> <!-- Use "#" as a placeholder -->
                       <img src="./Images/ei_comment.png" alt="comment">
                     </a>
-                    <img src="./Images/iconamoon_like-thin.png" alt="like">
+                    <img src="./Images/iconamoon_like-thin.png" alt="like" class = "like">
                   </div>
                 </div>
               `;
@@ -58,16 +160,21 @@ axios
                       <h5><a href="./anotherUsersAcount.html?id=${user.id}" class="userAccountBtn">${user.name}</a></h5>
                       <p>@${user.username}</p>
                       </div>
+                      <div class="profileName" >
+                    <div style="font-size:8px; color: rgba(0, 0, 0, 0.5) ">${timeString} </div>
+                    <div style="font-size:8px; color: rgba(0, 0, 0, 0.5) ">${dateString}</div>
+                    </div>
                     </div>
                     <div class="postContent">
                       <img src="${post.postPic}" alt="">
                       <p>${post.postName}</p>
                     </div>
                     <div class="reactions">
+                    ${post.numComments}
                       <a href="#" class="commentLink"> <!-- Use "#" as a placeholder -->
                         <img src="./Images/ei_comment.png" alt="comment">
                       </a>
-                      <img src="./Images/iconamoon_like-thin.png" alt="like">
+                      <img src="./Images/iconamoon_like-thin.png" alt="like" class = "like">
                     </div>
                   </div>
                 `;
@@ -90,9 +197,12 @@ axios
 
                 // Get the postId from the parent postElement's dataset
                 const clickedPostId = postElement.dataset.postId;
+                const clickedOwnerPost = postElement.dataset.id
+                
 
                 // Store the postId in local storage
                 localStorage.setItem('postId', clickedPostId);
+                localStorage.setItem('ownersPostId', clickedOwnerPost)
 
                 // Redirect to the comments.html page
                 window.location.href = './comments.html';
@@ -113,7 +223,7 @@ axios
 
 // Send a GET request to fetch persons to follow
 const userId = localStorage.id;
-const token = localStorage.token;
+// const token = localStorage.token;
 
 // Function to toggle the follow/unfollow state
 function toggleFollowState(button, personId) {

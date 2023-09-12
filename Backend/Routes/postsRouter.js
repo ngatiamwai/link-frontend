@@ -3,7 +3,7 @@ const { uploadPost, allPosts, getPostsByUserId, getOnePost, deletePost } = requi
 const { verifyToken } = require('../Middleware/verifyToken')
 const postRouter = Router()
 
-postRouter.post('/upload/:Id', verifyToken, uploadPost)
+postRouter.post('/upload/:userId', verifyToken, uploadPost)
 postRouter.get('/allPosts', allPosts)
 postRouter.get('/onepost/:postId', verifyToken, getOnePost)
 postRouter.get('/yourposts/:id', verifyToken, getPostsByUserId)

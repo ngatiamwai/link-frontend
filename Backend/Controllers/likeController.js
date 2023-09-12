@@ -60,7 +60,34 @@ async function unlikePost(req, res) {
     }
 }
 
+
+///get liked posts by userId
+const getLikedPostsByUser = async (req, res) => {
+    try {
+      const { userId } = req.params;
+  
+      const pool = await mssql.connect(sqlConfig);
+  
+      const result = await pool
+        .request()
+        .input('userId', mssql.VarChar(200), userId)
+        .execute('getLikedPostsByUser');
+  
+      const likedPosts = result.recordset;
+  
+      if (likedPosts.length > 0) {
+        return res.status(200).json(likedPosts);
+      } else {
+        return res.status(404).json({ message: 'No liked posts found for the user.' });
+      }
+    } catch (error) {
+      console.error('Error fetching liked posts:', error);
+      return res.status(500).json({ error: 'An error occurred while fetching liked posts.' });
+    }
+  };
+
 module.exports = {
     likePost,
     unlikePost,
+    getLikedPostsByUser
 };

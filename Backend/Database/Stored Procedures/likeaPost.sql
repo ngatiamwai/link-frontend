@@ -1,4 +1,4 @@
-CREATE PROCEDURE LikePost
+CREATE OR ALTER PROCEDURE LikePost
     @likeId VARCHAR(200),
     @postId VARCHAR(200),
     @userId VARCHAR(200),
@@ -10,8 +10,14 @@ BEGIN
     BEGIN
         -- User has not liked the post, insert a new like
         INSERT INTO likes (likeId, postId, userId, likedDate)
-        VALUES (NEWID(), @postId, @userId, GETDATE());
+        VALUES (@likeId, @postId, @userId, @likedDate);
+
+        -- Increment the numLikes column in the posts table
+        UPDATE posts
+        SET numLikes = numLikes + 1
+        WHERE postId = @postId;
     END
-END
+END;
+
 
 DROP PROC LikePost

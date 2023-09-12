@@ -7,10 +7,12 @@ dotenv.config();
 
 const uploadPost = async (req, res) => {
   try {
-    
-    console.log(req.body);
     const postId = v4();
-    const { postName, postPic, userId, updated_at } = req.body;
+    const { userId } = req.params;
+
+    const { postName, postPic } = req.body;
+
+    console.log(postId, postName, userId);
 
     if (!postName) {
       return res.status(400).json({
@@ -18,7 +20,7 @@ const uploadPost = async (req, res) => {
       });
     }
 
-    const pool = await mssql.connect(sqlConfig)
+    const pool = await mssql.connect(sqlConfig);
 
     const result = await pool
       .request()
@@ -26,7 +28,6 @@ const uploadPost = async (req, res) => {
       .input("postName", mssql.VarChar, postName)
       .input("postPic", mssql.VarChar, postPic)
       .input("userId", mssql.VarChar, userId)
-      .input("updated_at", mssql.DateTime, updated_at)
       .execute("UploadPostProc");
 
     if (result.rowsAffected[0] == 1) {
@@ -38,6 +39,8 @@ const uploadPost = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+
 
 
 //All Posts

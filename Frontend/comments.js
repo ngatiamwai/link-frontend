@@ -19,7 +19,7 @@ uploadInput.addEventListener('change', (event) => {
 
 
 ///The selected comment on the comment page
-const userId = localStorage.id
+const userId = localStorage.ownersPostId;
 const postId = localStorage.postId;
 const token = localStorage.token;
 
@@ -33,6 +33,9 @@ if (postId) {
     axios
         .get(`http://localhost:5000/posts/onepost/${postId}`, axiosConfig) // Pass the axiosConfig
         .then((response) => {
+
+       
+
             if (response.data) {
 
 
@@ -42,13 +45,22 @@ if (postId) {
                     .post(`http://localhost:5000/user/oneUser/${userId}`)
                     .then((userResponse) => {
                         const user = userResponse.data.user;
+                        console.log(user);
                         // Create HTML elements for the post and user information
                         const postElement = document.createElement('div');
                         postElement.classList.add('post');
                         const res = response.data;
                         const post = (res.post)[0]
+                        
 
                         console.log(post);
+
+                        const updatedAt = new Date(post.updated_at);
+
+                        // Format the time and date strings
+                        const timeString = updatedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        const dateString = updatedAt.toLocaleDateString();
+                        
 
                         // Create the post content without the image if post.postPic is not available
                         let postContent = `
@@ -59,15 +71,21 @@ if (postId) {
                     <h5>${user.name}</h5>
                     <p>@${user.username}</p>
                   </div>
+                  <div class="profileName" >
+                    <div style="font-size:8px; color: rgba(0, 0, 0, 0.5) ">${timeString} </div>
+                    <div style="font-size:8px; color: rgba(0, 0, 0, 0.5) ">${dateString}</div>
+                    </div>
                 </div>
                 
                 <div class="postContent">
                   <p>${post.postName}</p>
                 </div>
                 <div class="reactions">
+                ${post.numComments}
                   <a href="#" class="commentLink" data-post-id="${post.postId}">
                     <img src="./Images/ei_comment.png" alt="comment">
-                  </a>
+                    </a>
+                    
                   <img src="./Images/iconamoon_like-thin.png" alt="like">
                 </div>
               </div>
@@ -83,14 +101,19 @@ if (postId) {
                       <h5>${user.name}</h5>
                       <p>@${user.username}</p>
                     </div>
+                    <div class="profileName" >
+                    <div style="font-size:8px; color: rgba(0, 0, 0, 0.5) ">${timeString} </div>
+                    <div style="font-size:8px; color: rgba(0, 0, 0, 0.5) ">${dateString}</div>
+                    </div>
                   </div>
                   <div class="postContent">
                     <img src="${post.postPic}" alt="">
                     <p>${post.postName}</p>
                   </div>
                   <div class="reactions">
+                  ${post.numComments}
                     <a href="#" class="commentLink" data-post-id="${post.postId}">
-                      <img src="./Images/ei_comment.png" alt="comment">
+                    <img src="./Images/ei_comment.png" alt="comment">
                     </a>
                     <img src="./Images/iconamoon_like-thin.png" alt="like">
                   </div>
@@ -228,9 +251,11 @@ axios
 
       if (!Array.isArray(allPostsComments) && response.data.allPostsComments) {
         allPostsComments = response.data.allPostsComments;
-      }
+}
+      const noComments = allPostsComments.length
+      console.log(noComments);
 
-      console.log(allPostsComments);
+
       // Iterate through each post and fetch user information
       allPostsComments.forEach((allPostsComments) => {
         if (allPostsComments.userId) {
