@@ -61,8 +61,8 @@ document.addEventListener("DOMContentLoaded", function () {
   postsContainer.style.display = "block";
   commentsContainer.style.display = "none";
   likesContainer.style.display = "none";
-  // followersTable.style.display = "none";
-  // followingTable.style.display = "none";
+  followersTable.style.display = "none";
+  followingTable.style.display = "none";
   
 
   // Add click event listeners to the buttons
@@ -114,9 +114,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     <h5>${user.name}</h5>
                     <p>@${user.username}</p>
                   </div>
-                  <a href="#" class="deleteBtn" data-userid="${user.userId}" data-commentid="${post.postId}">
-                    <img src="./Images/delete.png" height="25vh" width="20vh" alt="Delete">
-                  </a>
+                  <a href="#" class="deletePost" data-userid="${user.userId}" data-commentid="${post.postId}">
+                  <img src="./Images/icons8-delete-24.png" height="12vh" width="10vh"  alt="Delete">
+                </a>
+                <a href="#" class="updatePost" data-userid="${user.userId}" data-commentid="${post.postId}">
+                  <img src="./Images/mdi_pencil-outline.png" height="12vh" width="10vh"  alt="Edit">
+                </a>
 
                 </div>
                 <div class="postContent">
@@ -141,8 +144,12 @@ document.addEventListener("DOMContentLoaded", function () {
                       <h5>${user.name}</h5>
                       <p>@${user.username}</p>
                     </div>
-                    <img src="./Images/delete.png" height = "25vh" width = "20vh"><button class="deleteBtn"></button></a>
-                  </div>
+                    <a href="#" class="deletePost" data-userid="${user.userId}" data-commentid="${post.postId}">
+                    <img src="./Images/icons8-delete-24.png" height="12vh" width="10vh"  alt="Delete">
+                  </a>
+                  <a href="#" class="updatePost" data-userid="${user.userId}" data-commentid="${post.postId}">
+                    <img src="./Images/mdi_pencil-outline.png" height="12vh" width="10vh"  alt="Edit">
+                  </a>                  </div>
                   <div class="postContent">
                     <img src="${post.postPic}" alt="">
                     <p>${post.postName}</p>
@@ -179,9 +186,6 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((error) => {
         console.error('Error fetching posts:', error);
       });
-
-
-
   });
 
 
@@ -242,8 +246,11 @@ document.addEventListener("DOMContentLoaded", function () {
                       <h5>${user.name}</h5>
                       <p>@${user.username}</p>
                     </div>
-                    <a href="#" class="deleteBtn" data-userid="${user.userId}" data-commentid="${alluserComments.postId}">
-                      <img src="./Images/delete.png" height="25vh" width="20vh" alt="Delete">
+                    <a href="#" class="deleteComment" data-userid="${user.userId}" data-commentid="${alluserComments.postId}">
+                      <img src="./Images/icons8-delete-24.png" height="12vh" width="10vh"  alt="Delete">
+                    </a>
+                    <a href="#" class="updateComment" data-userid="${user.userId}" data-commentid="${alluserComments.postId}">
+                      <img src="./Images/mdi_pencil-outline.png" height="12vh" width="10vh"  alt="Edit">
                     </a>
   
                   </div>
@@ -269,7 +276,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         <h5>${user.name}</h5>
                         <p>@${user.username}</p>
                       </div>
-                      <img src="./Images/delete.png" height = "25vh" width = "20vh"><button class="deleteBtn"></button></a>
+                      <a href="#" class="deleteComment" data-userid="${user.userId}" data-commentid="${alluserComments.postId}">
+                      <img src="./Images/icons8-delete-24.png" height="12vh" width="10vh"  alt="Delete">
+                    </a>
+                    <a href="#" class="updateComment" data-userid="${user.userId}" data-commentid="${alluserComments.postId}">
+                      <img src="./Images/mdi_pencil-outline.png" height="12vh" width="10vh"  alt="Edit">
+                    </a>
                     </div>
                     <div class="postContent">
                       <img src="${alluserComments.commentPic}" alt="">
@@ -307,9 +319,121 @@ document.addEventListener("DOMContentLoaded", function () {
   
   
   likesBtn.addEventListener("click", function () {
+    // Clear the postContainer to avoid duplicating comments
+    const postContainer = document.querySelector('.likesContainer');
+    postContainer.innerHTML = ''; // Clear the container
+
     postsContainer.style.display = "none";
     commentsContainer.style.display = "none";
     likesContainer.style.display = "block";
+    followersTable.style.display = "none";
+    followingTable.style.display = "none";
+  
+    const userId = localStorage.id;
+    const token = localStorage.token;
+    const postId = localStorage.postId;
+  
+    // Fetch comments for the specific user's post
+    axios
+      .get(`http://localhost:5000/like/yourlikes/${userId}`, {
+        headers: {
+          token: token
+        }
+      })
+      .then((response) => {
+        console.log(response.data);
+//  const likes = 
+        if (response.data) {
+          let likes = response.data;
+  
+          // Check if likes is an array; if not, convert it to an array
+          if (!Array.isArray(likes)) {
+            likes = [likes];
+            console.log(likes);
+          }
+  
+          // Iterate through each comment
+          likes.forEach((like) => {
+            console.log(like);
+            if (like.userId) {
+              axios.post(`http://localhost:5000/user/oneUser/${like.userId}`)
+                .then((response) => {
+                  console.log(response);
+  
+                  const user = response.data.user;
+                  console.log(user);
+  
+                  // Create HTML elements for the comment and user information
+                  const commentElement = document.createElement('div');
+                  commentElement.classList.add('post');
+  
+                  // Create the comment content
+                  let commentContent = `
+                  <div class="home">
+                  <div class="profilePic">
+                    <div> <img src="${user.profilePic}" alt=""> </div>
+                    <div class="profileName">
+                      <h5>${user.name}</h5>
+                      <p>@${user.username}</p>
+                    </div>
+
+  
+                  </div>
+                  <div class="postContent">
+                    <p>${like.postName }</p>
+                  </div>
+                  <div class="reactions">
+                    <a href="./comments.html">
+                      <img src="./Images/ei_comment.png" alt="comment">
+                    </a>
+                    <img src="./Images/iconamoon_like-thin.png" alt="like">
+                  </div>
+                </div>
+                  `;
+  
+                  // If comment.postPic exists, append the image to commentContent
+                  if (like.commentPic) {
+                    commentContent = `
+                    <div class="home">
+                    <div class="profilePic">
+                      <div> <img src="${user.profilePic}" alt=""> </div>
+                      <div class="profileName">
+                        <h5>${user.name}</h5>
+                        <p>@${user.username}</p>
+                      </div>
+                    </div>
+                    <div class="postContent">
+                      <img src="${like.commentPic}" alt="">
+                      <p>${like.commentText}</p>
+                    </div>
+                    <div class="reactions">
+                      <a href="./comments.html">
+                        <img src="./Images/ei_comment.png" alt="comment">
+                      </a>
+                      <img src="./Images/iconamoon_like-thin.png" alt="like">
+                    </div>
+                  </div>
+                    `;
+                  }
+  
+                  // Set the comment content
+                  commentElement.innerHTML = commentContent;
+  
+                  // Append the commentElement to postContainer
+                  postContainer.appendChild(commentElement);
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }
+          });
+        } else {
+          console.error('No comments found in the response data.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching comments:', error);
+      });
   });
 
 
@@ -348,7 +472,7 @@ function toggleFollowState(button, personId) {
 
 // Add an event listener to the "Followers" button
 followersBtn.addEventListener("click", () => {
-  const followersTable = document.querySelector('.followersContainer');
+  const followersTable = document.querySelector('.followersContainer ');
 
   // Clear any existing data in the table
   followersTable.innerHTML = "";
@@ -376,35 +500,23 @@ followersBtn.addEventListener("click", () => {
       // Iterate through the followersData and create HTML elements
       followersData.forEach((follower) => {
         const post = document.createElement("div");
-        post.classList.add("followers");
+        post.classList.add("post");
         post.innerHTML = `
-        <div class="home">
-        <table>
-            <thead>
-                <tr>
-                    <th>Followers</th>
-                </tr>
-            </thead>
-            <tbody style="margin-top: 1vh;">
                 <tr>
                     <td><img src="${follower.profilePic}" alt="" style="height: 10vh; width: 10vh; border-radius: 100%;"></td>
                     <td>${follower.name}</td>
                     <td>@${follower.username}</td>
                     <button class="followBtn" data-person-id="${follower.id}"> Follow</button>
-                </tr>
-            </tbody>
-        </table>
-    </div>
         `;
 
         // Append the post to the table
         followersTable.appendChild(post);
 
         // Add an event listener to the follow button for each follower
-        const unfollowButton = post.querySelector(".unfollowBtn");
-        unfollowButton.addEventListener("click", () => {
+        const followButton = post.querySelector(".followBtn");
+        followButton.addEventListener("click", () => {
           const personId = follower.id;
-          toggleFollowState(unfollowButton, personId);
+          toggleFollowState(followButton, personId);
         });
       });
     })
@@ -413,19 +525,21 @@ followersBtn.addEventListener("click", () => {
     });
 });
 
+
   
-  followingBtn.addEventListener('click', () => {
-    const followingTable = document.querySelector('.followingContainer');
+followingBtn.addEventListener('click', () => {
+    const followingTable = document.querySelector(' .followingContainer ');
   
-    // Clear any existing data in the table
+  //   // Clear any existing data in the table
     followingTable.innerHTML = '';
+
     postsContainer.style.display = "none";
     commentsContainer.style.display = "none";
     likesContainer.style.display = "none";
     followersTable.style.display = "none";
     followingTable.style.display = "block";
   
-    // Make an HTTP GET request to the server endpoint
+  //   // Make an HTTP GET request to the server endpoint
     const userId = localStorage.id;
     const token = localStorage.token;
   
@@ -440,7 +554,8 @@ followersBtn.addEventListener("click", () => {
         const followingData = response.data;
         
         followingData.forEach((following) => {
-          const raw = document.createElement('tr');
+          const raw = document.createElement('div');
+          raw.classList.add("post");
           raw.innerHTML = `
             <td><img src="${following.profilePic}" alt="" style="height: 10vh; width: 10vh; border-radius: 100%;"></td>
             <td>${following.name}</td>
@@ -463,4 +578,50 @@ followersBtn.addEventListener("click", () => {
       });
   });
   
+
+
+  // Event listener for deleting a post
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('deletePost')) {
+    e.preventDefault();
+    const postId = e.target.dataset.postid;
+    const userId = localStorage.id; // Assuming you have the user's ID
+    const token = localStorage.token; // Assuming you have the user's token
+
+    // Send a DELETE request to delete the post
+    const axiosConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+        token: token,
+      },
+    };
+
+    axios.delete(`http://localhost:5000/posts/deletepost/${userId}/${postId}`, axiosConfig)
+      .then((response) => {
+        // Handle successful deletion
+        console.log('Post deleted successfully:', response.data);
+
+        // Assuming you want to remove the post from the UI, you can find the postElement and remove it here
+        const postElement = document.querySelector(`[data-postid="${postId}"]`);
+        if (postElement) {
+          postElement.remove();
+        }
+      })
+      .catch((error) => {
+        console.error('Error deleting the post:', error);
+      });
+  }
+});
+
+// Event listener for updating a post
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('updatePost')) {
+    e.preventDefault();
+    const postId = e.target.dataset.postid;
+
+    // Implement your logic to open an update post modal or navigate to an update page with postId
+    // Example: window.location.href = `/updatePost.html?postId=${postId}`;
+  }
+});
+
 })

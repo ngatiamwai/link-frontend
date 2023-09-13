@@ -7,25 +7,24 @@ dotenv.config()
 
 // Controller function to like a post
 async function likePost(req, res) {
-    const { postId, userId } = req.body;
+  try {
+    const { postId, userId } = req.params;
+    const likeId = v4()
 
-    try {
-        const request = new mssql.Request();
-        const query = `
-        -- Check if the user has already liked the post
-        IF NOT EXISTS (SELECT 1 FROM likes WHERE postId = @postId AND userId = @userId)
-        BEGIN
-            -- User has not liked the post, insert a new like
-            INSERT INTO likes (likeId, postId, userId, likedDate)
-            VALUES (NEWID(), @postId, @userId, GETDATE());
-        END
-      `;
+      const pool = await mssql.connect(sqlConfig);
+        const result = await pool.request()
+      .input('likeId', likeId)
+      .input('postId', mssql.VarChar(200), postId)
+      .input('userId', mssql.VarChar(200), userId)
+      .execute('LikePost')
 
-        request.input('postId', mssql.VarChar(200), postId);
-        request.input('userId', mssql.VarChar(200), userId);
 
-        await request.query(query);
+      if (result.rowsAffected[0] == 1) {
         res.status(200).json({ message: 'Post liked successfully' });
+      } else {
+        res.status(400).json({ message: "Post was not liked" });
+      }
+
     } catch (error) {
         console.error('Error liking the post:', error);
         res.status(500).json({ error: 'An error occurred while liking the post' });
@@ -36,24 +35,22 @@ async function likePost(req, res) {
 
 // Controller function to unlike a post
 async function unlikePost(req, res) {
-    const { postId, userId } = req.body;
+  try {
+    const { postId, userId } = req.params;
 
-    try {
-        const request = new mssql.Request();
-        const query = `
-      -- Check if the user has liked the post
-      IF EXISTS (SELECT 1 FROM likes WHERE postId = @postId AND userId = @userId)
-      BEGIN
-          -- User has liked the post, delete the like
-          DELETE FROM likes WHERE postId = @postId AND userId = @userId;
-      END
-    `;
+    const pool = await mssql.connect(sqlConfig)
 
-        request.input('postId', mssql.VarChar(200), postId);
-        request.input('userId', mssql.VarChar(200), userId);
+    const result = await pool.request()
+    .input('postId', mssql.VarChar(200), postId)
+    .input('userId', mssql.VarChar(200), userId)
+    .execute('UnlikePost')
 
-        await request.query(query);
-        res.status(200).json({ message: 'Post unliked successfully' });
+
+    if (result.rowsAffected[0] == 1) {
+      res.status(200).json({ message: 'Post unliked successfully' });
+    } else {
+      res.status(400).json({ message: "Post was not unliked" });
+    }
     } catch (error) {
         console.error('Error unliking the post:', error);
         res.status(500).json({ error: 'An error occurred while unliking the post' });

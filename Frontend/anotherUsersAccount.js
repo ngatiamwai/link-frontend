@@ -1,7 +1,4 @@
 ///profile info
-// const userId = localStorage.id;
-// const token = localStorage.token;
-// Extract the userId from the URL
 const queryParams = new URLSearchParams(window.location.search);
 const userId = queryParams.get('id');
 
@@ -62,8 +59,8 @@ document.addEventListener("DOMContentLoaded", function () {
   postsContainer.style.display = "block";
   commentsContainer.style.display = "none";
   likesContainer.style.display = "none";
-  // followersTable.style.display = "none";
-  // followingTable.style.display = "none";
+  followersTable.style.display = "none";
+  followingTable.style.display = "none";
   
 
   // Add click event listeners to the buttons
@@ -71,6 +68,8 @@ document.addEventListener("DOMContentLoaded", function () {
     postsContainer.style.display = "block";
     commentsContainer.style.display = "none";
     likesContainer.style.display = "none";
+    followersTable.style.display = "none";
+    followingTable.style.display = "none";
 
     const userId = queryParams.get('id');
     const token = localStorage.token
@@ -239,6 +238,8 @@ document.addEventListener("DOMContentLoaded", function () {
                       <h5>${user.name}</h5>
                       <p>@${user.username}</p>
                     </div>
+                    <a href="#" class="deleteBtn" data-userid="${user.userId}" data-commentid="${alluserComments.postId}">
+
   
                   </div>
                   <div class="postContent">
@@ -300,9 +301,121 @@ document.addEventListener("DOMContentLoaded", function () {
   
   
   likesBtn.addEventListener("click", function () {
+    // Clear the postContainer to avoid duplicating comments
+    const postContainer = document.querySelector('.likesContainer');
+    postContainer.innerHTML = ''; // Clear the container
+
     postsContainer.style.display = "none";
     commentsContainer.style.display = "none";
     likesContainer.style.display = "block";
+    followersTable.style.display = "none";
+    followingTable.style.display = "none";
+  
+    const userId = localStorage.id;
+    const token = localStorage.token;
+    const postId = localStorage.postId;
+  
+    // Fetch comments for the specific user's post
+    axios
+      .get(`http://localhost:5000/like/yourlikes/${userId}`, {
+        headers: {
+          token: token
+        }
+      })
+      .then((response) => {
+        console.log(response.data);
+//  const likes = 
+        if (response.data) {
+          let likes = response.data;
+  
+          // Check if likes is an array; if not, convert it to an array
+          if (!Array.isArray(likes)) {
+            likes = [likes];
+            console.log(likes);
+          }
+  
+          // Iterate through each comment
+          likes.forEach((like) => {
+            console.log(like);
+            if (like.userId) {
+              axios.post(`http://localhost:5000/user/oneUser/${like.userId}`)
+                .then((response) => {
+                  console.log(response);
+  
+                  const user = response.data.user;
+                  console.log(user);
+  
+                  // Create HTML elements for the comment and user information
+                  const commentElement = document.createElement('div');
+                  commentElement.classList.add('post');
+  
+                  // Create the comment content
+                  let commentContent = `
+                  <div class="home">
+                  <div class="profilePic">
+                    <div> <img src="${user.profilePic}" alt=""> </div>
+                    <div class="profileName">
+                      <h5>${user.name}</h5>
+                      <p>@${user.username}</p>
+                    </div>
+
+  
+                  </div>
+                  <div class="postContent">
+                    <p>${like.postName }</p>
+                  </div>
+                  <div class="reactions">
+                    <a href="./comments.html">
+                      <img src="./Images/ei_comment.png" alt="comment">
+                    </a>
+                    <img src="./Images/iconamoon_like-thin.png" alt="like">
+                  </div>
+                </div>
+                  `;
+  
+                  // If comment.postPic exists, append the image to commentContent
+                  if (like.commentPic) {
+                    commentContent = `
+                    <div class="home">
+                    <div class="profilePic">
+                      <div> <img src="${user.profilePic}" alt=""> </div>
+                      <div class="profileName">
+                        <h5>${user.name}</h5>
+                        <p>@${user.username}</p>
+                      </div>
+                    </div>
+                    <div class="postContent">
+                      <img src="${like.commentPic}" alt="">
+                      <p>${like.commentText}</p>
+                    </div>
+                    <div class="reactions">
+                      <a href="./comments.html">
+                        <img src="./Images/ei_comment.png" alt="comment">
+                      </a>
+                      <img src="./Images/iconamoon_like-thin.png" alt="like">
+                    </div>
+                  </div>
+                    `;
+                  }
+  
+                  // Set the comment content
+                  commentElement.innerHTML = commentContent;
+  
+                  // Append the commentElement to postContainer
+                  postContainer.appendChild(commentElement);
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }
+          });
+        } else {
+          console.error('No comments found in the response data.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching comments:', error);
+      });
   });
 
 
@@ -369,34 +482,23 @@ followersBtn.addEventListener("click", () => {
       // Iterate through the followersData and create HTML elements
       followersData.forEach((follower) => {
         const post = document.createElement("div");
-        post.classList.add("followers");
+        post.classList.add("post");
         post.innerHTML = `
-        <div class="home">
-        <table>
-            <thead>
-                <tr>
-                    <th>Followers</th>
-                </tr>
-            </thead>
-            <tbody style="margin-top: 1vh;">
                 <tr>
                     <td><img src="${follower.profilePic}" alt="" style="height: 10vh; width: 10vh; border-radius: 100%;"></td>
                     <td>${follower.name}</td>
                     <td>@${follower.username}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                    <button class="followBtn" data-person-id="${follower.id}"> Follow</button>
         `;
 
         // Append the post to the table
         followersTable.appendChild(post);
 
         // Add an event listener to the follow button for each follower
-        const unfollowButton = post.querySelector(".unfollowBtn");
-        unfollowButton.addEventListener("click", () => {
+        const followButton = post.querySelector(".followBtn");
+        followButton.addEventListener("click", () => {
           const personId = follower.id;
-          toggleFollowState(unfollowButton, personId);
+          toggleFollowState(followButton, personId);
         });
       });
     })
@@ -421,36 +523,39 @@ followersBtn.addEventListener("click", () => {
     const userId = queryParams.get('id');
         const token = localStorage.token;
   
-    axios
-      .get(`http://localhost:5000/follow/personsyouarefollowing/${userId}`, {
-        headers: {
-          token: token,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        const followingData = response.data;
-        
-        followingData.forEach((following) => {
-          const raw = document.createElement('tr');
-          raw.innerHTML = `
-            <td><img src="${following.profilePic}" alt="" style="height: 10vh; width: 10vh; border-radius: 100%;"></td>
-            <td>${following.name}</td>
-            <td>@${following.username}</td>
-          `;
+        axios
+        .get(`http://localhost:5000/follow/personsyouarefollowing/${userId}`, {
+          headers: {
+            token: token,
+          },
+        })
+        .then((response) => {
+          console.log(response.data);
+          const followingData = response.data;
+          
+          followingData.forEach((following) => {
+            const raw = document.createElement('div');
+            raw.classList.add("post");
+            raw.innerHTML = `
+              <td><img src="${following.profilePic}" alt="" style="height: 10vh; width: 10vh; border-radius: 100%;"></td>
+              <td>${following.name}</td>
+              <td>@${following.username}</td>
+
   
-          followingTable.appendChild(raw);
-           // Add an event listener to the follow button for each follower
-        const followButton = raw.querySelector(".followBtn");
-        followButton.addEventListener("click", () => {
-          const personId = following.id;
-          toggleFollowState(followButton, personId);
+            `;
+    
+            followingTable.appendChild(raw);
+             // Add an event listener to the follow button for each follower
+          const followButton = raw.querySelector(".followBtn");
+          followButton.addEventListener("click", () => {
+            const personId = following.id;
+            toggleFollowState(followButton, personId);
+          });
+          });
+        })
+        .catch((error) => {
+          console.error('Error fetching your following:', error);
         });
-        });
-      })
-      .catch((error) => {
-        console.error('Error fetching your following:', error);
-      });
   });
   
 })

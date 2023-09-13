@@ -6,3 +6,6 @@ CREATE TABLE likes (
     CONSTRAINT FK_Likes_Post FOREIGN KEY (postId) REFERENCES posts(postId),
     CONSTRAINT FK_Likes_User FOREIGN KEY (userId) REFERENCES userTable(id)
 );
+
+
+SELECT * FROM likes

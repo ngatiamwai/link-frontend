@@ -343,6 +343,13 @@ th, td {
     align-items: center;
 }
 
+.followersContainer>.post, .followingContainer>.post{
+    display: flex;
+    gap: 8vh;
+    align-items: center;
+    justify-content: space-around;
+}
+
 @media (max-width: 768px) {
     *{
         font-size: 12px;
@@ -463,7 +470,7 @@ th, td {
         width: 50vh;
     }
     .profilePic>h2{
-        gap: 10vh;
+        gap: 5vh;
     }
     table {
         width: 100%; 
@@ -492,5 +499,8 @@ th, td {
         left: 15%;
         right: 15%;
         top: 27%;
+    }
+    .followers1{
+        gap: 2vh;
     }
 }

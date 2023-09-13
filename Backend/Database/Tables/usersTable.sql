@@ -20,7 +20,17 @@ ALTER TABLE userTable
 ADD profilePic VARCHAR(255) -- You can adjust the data type and size as needed
 
 
+BEGIN TRY
+ALTER TABLE userTable
+ADD numFollowers INT DEFAULT 0, -- Default value is 0
+    numFollowing INT DEFAULT 0;     -- Default value is 0
+END TRY
+BEGIN CATCH
+THROW 50002, 'Error occurred when altering posts table', 1;
+END CATCH
+
 
 DROP TABLE userTable
 
 SELECT * FROM userTable
+

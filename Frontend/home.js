@@ -1,89 +1,48 @@
 // Function to like a post
 const token = localStorage.token
+const userId = localStorage.userId
+const postId = localStorage.postId
+// Function to update the like status of a post
 
-function likePost(postId, userId, token) {
-  const axiosConfig = {
-      headers: {
-          'Content-Type': 'application/json',
-          'token': token
-      }
-  };
 
-  axios.get(`http://localhost:5000/like/likepost/${postId}/${userId}`, axiosConfig)
-      .then((response) => {
-          console.log('Post liked successfully:', response.data);
-          // You can update your UI here to reflect that the post is liked.
-          updateLikeCount(postId, userId, token);
-      })
-      .catch((error) => {
-          console.error('Error liking the post:', error);
-      });
-}
-
-// Function to unlike a post
-function unlikePost(postId, userId, token) {
-  const axiosConfig = {
-      headers: {
-          'Content-Type': 'application/json',
-          'token': token
-      }
-  };
-
-  axios.delete(`http://localhost:5000/like/unlikepost/${postId}/${userId}`, axiosConfig)
-      .then((response) => {
-          console.log('Post unliked successfully:', response.data);
-          // You can update your UI here to reflect that the post is unliked.
-          updateLikeStatus(postId, false); // Set liked status to false
-          updateLikeCount(postId, userId, token);
-      })
-      .catch((error) => {
-          console.error('Error unliking the post:', error);
-      });
-}
-
-// Function to update the like count for a post
-function updateLikeCount(postId, userId, token) {
-  const axiosConfig = {
-      headers: {
-          'Content-Type': 'application/json',
-          'token': token
-      }
-  };
-
-  axios.get(`http://localhost:5000/like/getlikecount/${postId}`, axiosConfig)
-      .then((response) => {
-          const likeCount = response.data.count;
-          // Update the UI to display the like count for the post
-          const postElement = document.querySelector(`[data-post-id="${postId}"]`);
-          if (postElement) {
-              const likeCountElement = postElement.querySelector('.likeCount');
-              if (likeCountElement) {
-                  likeCountElement.textContent = `${likeCount} Likes`;
-              }
-          }
-      })
-      .catch((error) => {
-          console.error('Error fetching like count:', error);
-      });
-}
-
-// Add event listener to handle liking/unliking when the "like" element is clicked
-document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('like')) {
-      const postId = e.target.dataset.postId;
-      const userId = e.target.dataset.userId;
-      const isLiked = e.target.classList.contains('liked');
-      const token = localStorage.token; // Replace with your actual token
-
-      if (isLiked) {
-          // Unlike the post if it's already liked
-          unlikePost(postId, userId, token);
-      } else {
-          // Like the post if it's not liked yet
-          likePost(postId, userId, token);
-      }
+function toggleFollowState(button, personId) {
+  // Check if the user is logged in (has a valid token)
+  if (!token) {
+    // You can display a message to prompt the user to log in
+    alert('Please log in to follow users.');
+    return;
   }
-});
+
+  // Check if the button contains "Follow" or "Unfollow"
+  const isFollow = button.textContent == "Follow";
+
+  // Create the URL based on the state (follow or unfollow)
+  const followUrl = isFollow
+    ? `http://localhost:5000/follow/follow/${userId}/${personId}`
+    : `http://localhost:5000/follow/unfollow/${userId}/${personId}`;
+
+  // Create the request method based on the state (POST for follow, DELETE for unfollow)
+  const method = isFollow ? "POST" : "DELETE";
+
+  axios({
+    method: method,
+    url: followUrl,
+    headers: {
+      token: token,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.data) {
+        // Toggle the button text and style
+        button.textContent = isFollow ? "Unfollow" : "Follow";
+        button.classList.toggle("unfollowBtn");
+      }
+    })
+    .catch((error) => {
+      console.error("Error toggling follow state:", error);
+    });
+}
 
 
 // Fetch all posts
@@ -113,13 +72,13 @@ axios
 
               // Create a unique container for each post with postId as the identifier
               postElement.dataset.postId = post.postId;
-              postElement.dataset.id = user.id
+              postElement.dataset.id = user.id;
 
               const updatedAt = new Date(post.updated_at);
 
-// Format the time and date strings
-const timeString = updatedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-const dateString = updatedAt.toLocaleDateString();
+              // Format the time and date strings
+              const timeString = updatedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              const dateString = updatedAt.toLocaleDateString();
 
 
               // Create the post content without the image if post.postPic is not available
@@ -145,7 +104,10 @@ const dateString = updatedAt.toLocaleDateString();
                     <a href="#" class="commentLink"> <!-- Use "#" as a placeholder -->
                       <img src="./Images/ei_comment.png" alt="comment">
                     </a>
-                    <img src="./Images/iconamoon_like-thin.png" alt="like" class = "like">
+                    ${post.numLikes}
+                    <a href="#"  class = numLikes>
+                    <img src="./Images/iconamoon_like-thin.png" alt="like" class = "like" data-postId="${post.postId}">
+                    </a>
                   </div>
                 </div>
               `;
@@ -174,7 +136,10 @@ const dateString = updatedAt.toLocaleDateString();
                       <a href="#" class="commentLink"> <!-- Use "#" as a placeholder -->
                         <img src="./Images/ei_comment.png" alt="comment">
                       </a>
-                      <img src="./Images/iconamoon_like-thin.png" alt="like" class = "like">
+                      ${post.numLikes}
+                      <a href="#"  class = numLikes>
+                    <img src="./Images/iconamoon_like-thin.png" alt="like" class = "like"  data-postId="${post.postId}">
+                    </a>
                     </div>
                   </div>
                 `;
@@ -198,7 +163,7 @@ const dateString = updatedAt.toLocaleDateString();
                 // Get the postId from the parent postElement's dataset
                 const clickedPostId = postElement.dataset.postId;
                 const clickedOwnerPost = postElement.dataset.id
-                
+
 
                 // Store the postId in local storage
                 localStorage.setItem('postId', clickedPostId);
@@ -210,7 +175,7 @@ const dateString = updatedAt.toLocaleDateString();
             })
             .catch((err) => {
               console.log(err);
-            })
+            });
         }
       });
     } else {
@@ -221,9 +186,7 @@ const dateString = updatedAt.toLocaleDateString();
     console.error('Error fetching posts:', error);
   });
 
-// Send a GET request to fetch persons to follow
-const userId = localStorage.id;
-// const token = localStorage.token;
+
 
 // Function to toggle the follow/unfollow state
 function toggleFollowState(button, personId) {
@@ -319,3 +282,69 @@ axios
   .catch((error) => {
     console.error('Error fetching persons to follow:', error);
   });
+
+
+// Add an event listener to handle liking when the "like" element is clicked
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('like')) {
+    // Find the parent element of the clicked "like" button
+    const postElement = e.target.closest('.post');
+
+    // Check if the parent post element exists and has a postId
+    if (postElement && postElement.dataset.postId) {
+      const postId = postElement.dataset.postId;
+
+      // Call the likePost function to like the post
+      likePost(postId);
+      // unlikePost(postId)
+    }
+  }
+});
+
+// Function to like a post
+function likePost(postId) {
+  const userId = localStorage.id;
+  const token = localStorage.token;
+
+  const axiosConfig = {
+    headers: {
+      'Content-Type': 'application/json',
+      token: token,
+    },
+  };
+
+  axios.get(`http://localhost:5000/like/likepost/${userId}/${postId}`, axiosConfig)
+    .then((response) => {
+      console.log('Post liked successfully:', response.data);
+
+    })
+    .catch((error) => {
+      console.error('Error liking the post:', error);
+    });
+}
+
+
+// Function to like a post
+function unlikePost(postId) {
+  const userId = localStorage.id;
+  const token = localStorage.token;
+
+  const axiosConfig = {
+    headers: {
+      'Content-Type': 'application/json',
+      token: token,
+    },
+  };
+
+  axios.delete(`http://localhost:5000/like/unlikepost//${userId}/${postId}`, axiosConfig)
+    .then((response) => {
+      console.log('Post unliked successfully:', response.data);
+
+    })
+    .catch((error) => {
+      console.error('Error unliking the post:', error);
+    });
+}
+
+
+

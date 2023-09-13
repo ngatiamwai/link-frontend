@@ -6,46 +6,38 @@ const { sqlConfig } = require('../Config/config')
 dotenv.config()
 
 const followPerson = async (req, res) => {
-    try {
-        const followId = v4();
-        const { followerId, followingId } = req.params;
+  try {
+      const followId = v4();
+      const { followerId, followingId } = req.params;
 
-        console.log(followerId, followingId);
+      console.log(followerId, followingId);
 
-        if (!followerId || !followingId) {
-            return res.status(400).json({
-                error: 'Please provide followerId and followingId.',
-            });
-        }
+      if (!followerId || !followingId) {
+          return res.status(400).json({
+              error: 'Please provide followerId and followingId.',
+          });
+      }
 
-        // Check if the follow relationship already exists
-        const pool = await mssql.connect(sqlConfig);
-        const checkExistingFollow = await pool.request()
-            .input("followerId", followerId)
-            .input("followingId", followingId)
-            .query("SELECT * FROM Follow WHERE followerId = @followerId AND followingId = @followingId");
+      const pool = await mssql.connect(sqlConfig)
 
-        if (checkExistingFollow.recordset.length > 0) {
-            return res.status(400).json({ message: 'You are already following this user.' });
-        }
+          const result = await pool.request()
+              .input("followId", followId)
+              .input("followingId", followingId)
+              .input("followerId", followerId)
+              .execute("followPerson");
 
-        // If the follow relationship does not exist, add it
-        const result = await pool.request()
-            .input("followId", followId)
-            .input("followingId", followingId)
-            .input("followerId", followerId)
-            .execute("followPerson");
+          if (result.rowsAffected[0] == 1) {
+              res.status(200).json({ message: 'You are now following this user.' });
+          } else {
+              return res.status(400).json({ message: "Following user failed" });
+          }
 
-        if (result.rowsAffected[0] == 1) {
-            res.status(200).json({ message: 'You are now following this user.' });
-        } else {
-            return res.status(400).json({ message: "Following user failed" });
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'An error occurred while following the user.' });
-    }
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'An error occurred while following the user.' });
+  }
 };
+
 
 
 const unfollowPerson = async (req, res) => {
@@ -104,6 +96,7 @@ const getPersonsToFollow = async (req, res) => {
   };
   
 
+
   ///persons you are followning
   const getPersonsYouAreFollowing = async (req, res) => {
     try {
@@ -132,32 +125,36 @@ const getPersonsToFollow = async (req, res) => {
   };
 
 
-  ///Your Followers
-  const yourFollowers = async (req, res) => {
-    try {
-      const { followerId } = req.params;
-  
-      if (!followerId) {
-        return res.status(400).json({
-          error: 'Please provide followerId.',
-        });
-      }
-  
-      const pool = await mssql.connect(sqlConfig);
-  
-      // Execute the stored procedure
-      const result = await pool
-        .request()
-        .input('followerId', followerId)
-        .execute('yourFollowers');
-  
-      // Send the list of followers as a JSON response
-      res.status(200).json(result.recordset);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'An error occurred while getting your followers.' });
+
+ ///Your Followers
+const yourFollowers = async (req, res) => {
+  try {
+    const { followerId } = req.params;
+
+    if (!followerId) {
+      return res.status(400).json({
+        error: 'Please provide followerId.',
+      });
     }
-  };
+
+    console.log(followerId);
+
+    const pool = await mssql.connect(sqlConfig);
+
+    // Execute the stored procedure with the correct parameter name
+    const result = await pool
+      .request()
+      .input('followerId', followerId) // Use followerId instead of userId
+      .execute('yourFollowers');
+
+    // Send the list of followers as a JSON response
+    res.status(200).json(result.recordset);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while getting your followers.' });
+  }
+};
+
 
 module.exports = {
     followPerson,

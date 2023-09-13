@@ -157,6 +157,39 @@ const subComment = async (req, res) => {
 };
 
 
+////Update Comment
+const updateComment = async (req, res) => {
+  try {
+    const { commentId } = req.params; // Get the commentId from the request parameters
+    const { commentText, commentPic } = req.body; // Get updated comment data from the request body
+
+    console.log(commentId , commentText, commentPic)
+
+    const pool = await mssql.connect(sqlConfig);
+
+    const request = pool.request();
+    request.input('commentId', commentId);
+    request.input('commentText', commentText);
+    request.input('commentPic', commentPic);
+
+    // Create the SQL query to call the stored procedure
+    const query = `
+      EXEC UpdateComment @commentId, @commentText, @commentPic
+    `;
+
+    const result = await request.query(query);
+
+    if (result.rowsAffected[0] === 1) {
+      return res.status(200).json({ message: 'Comment updated successfully' });
+    } else {
+      return res.status(404).json({ error: 'Comment not found or update failed.' });
+    }
+  } catch (error) {
+    console.error('Error updating comment:', error);
+    return res.status(500).json({ error: 'An error occurred while updating the comment.' });
+  }
+};
+
 
 
 module.exports = {
@@ -164,5 +197,6 @@ module.exports = {
   allCommentsByPostId,
   allCommentsByuserId,
   deleteComment,
-  subComment
+  subComment,
+  updateComment
 };

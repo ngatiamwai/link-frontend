@@ -1,4 +1,4 @@
-CREATE PROCEDURE personsYouAreFollowing
+CREATE OR ALTER PROCEDURE personsYouAreFollowing
     @userId VARCHAR(200)
 AS
 BEGIN
@@ -7,5 +7,6 @@ BEGIN
     JOIN Follow F ON U.id = F.followingId
     WHERE F.followerId = @userId;
 END
+
 
 DROP PROC personsYouAreFollowing

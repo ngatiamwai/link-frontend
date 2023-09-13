@@ -1,4 +1,4 @@
-//pos
+//Post
 
 const uploadInput = document.getElementById('upload');
 const imagePreview = document.getElementById('imagePreview');
@@ -48,7 +48,7 @@ const errorMsg = document.querySelector(".errorMsg")
 registerForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    if (uploadPost.value !== "" && uploadImageUrl && userId) { // Check if userId is available
+    if (uploadPost.value !== "" && uploadImageUrl && userId !== "") { // Check if userId is available
         axios
             .post(`http://localhost:5000/posts/upload/${userId}`,
                 {

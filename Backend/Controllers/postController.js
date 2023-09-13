@@ -134,10 +134,45 @@ const deletePost = async (req, res) => {
 };
 
 
+////update post
+const updatePost = async (req, res) => {
+  try {
+    const { postId } = req.params; // Get the postId from the request parameters
+    const { postName, postPic } = req.body; // Get updated post data from the request body
+
+    console.log(postId, postName, postPic);
+
+    const pool = await mssql.connect(sqlConfig);
+
+    const request = pool.request();
+    request.input('postId', postId);
+    request.input('postName', postName); // Pass the updated postName
+    request.input('postPic', postPic);     // Pass the updated postPic (even if it's undefined)
+
+    const result = await request.query(`
+      EXEC updatePost @postId, @postName, @postPic
+    `);
+
+    if (result.rowsAffected[0] === 1) {
+      return res.status(200).json({ message: 'Post updated successfully' });
+    } else {
+      return res.status(404).json({ error: 'Post not found or update failed.' });
+    }
+  } catch (error) {
+    console.error('Error updating post:', error);
+    return res.status(500).json({ error: 'An error occurred while updating the post.' });
+  }
+};
+
+
+
+
+
 module.exports = {
   uploadPost,
   allPosts,
   getOnePost,
   getPostsByUserId,
-  deletePost
+  deletePost,
+  updatePost
 };

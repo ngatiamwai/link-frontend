@@ -1,4 +1,4 @@
-CREATE PROCEDURE yourFollowers
+CREATE OR ALTER PROCEDURE yourFollowers
     @followerId VARCHAR(200)
 AS
 BEGIN
@@ -7,5 +7,6 @@ BEGIN
     INNER JOIN userTable U ON F.followingId = U.id
     WHERE F.followerId = @followerId;
 END
+
 
 DROP PROC GetPeopleYouAreFollowing
