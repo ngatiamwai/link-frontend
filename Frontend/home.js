@@ -106,7 +106,7 @@ axios
                     </a>
                     ${post.numLikes}
                     <a href="#"  class = numLikes>
-                    <img src="./Images/iconamoon_like-thin.png" alt="like" class = "like" data-postId="${post.postId}">
+                    <img src="./Images/iconamoon_like-thin.png" alt="like" class = "like" class="unlike" data-postId="${post.postId}">
                     </a>
                   </div>
                 </div>
@@ -138,7 +138,7 @@ axios
                       </a>
                       ${post.numLikes}
                       <a href="#"  class = numLikes>
-                    <img src="./Images/iconamoon_like-thin.png" alt="like" class = "like"  data-postId="${post.postId}">
+                    <img src="./Images/iconamoon_like-thin.png" alt="like" class = "like"  class="unlike" data-postId="${post.postId}">
                     </a>
                     </div>
                   </div>
@@ -190,6 +190,8 @@ axios
 
 // Function to toggle the follow/unfollow state
 function toggleFollowState(button, personId) {
+
+ const userId = localStorage.id
   // Check if the user is logged in (has a valid token)
   if (!token) {
     // You can display a message to prompt the user to log in
@@ -296,7 +298,14 @@ document.addEventListener('click', (e) => {
 
       // Call the likePost function to like the post
       likePost(postId);
-      // unlikePost(postId)
+      
+    }
+  }else{
+    const postElement  = e.target.closest('.post')
+    if(postElement && postElement.dataset.postId){
+      const postId = postElement.dataset.postId
+
+      unlikePost(postId)
     }
   }
 });
@@ -316,7 +325,7 @@ function likePost(postId) {
   axios.get(`http://localhost:5000/like/likepost/${userId}/${postId}`, axiosConfig)
     .then((response) => {
       console.log('Post liked successfully:', response.data);
-
+      window.location.reload();
     })
     .catch((error) => {
       console.error('Error liking the post:', error);
@@ -336,7 +345,7 @@ function unlikePost(postId) {
     },
   };
 
-  axios.delete(`http://localhost:5000/like/unlikepost//${userId}/${postId}`, axiosConfig)
+  axios.delete(`http://localhost:5000/like/unlikepost/${userId}/${postId}`, axiosConfig)
     .then((response) => {
       console.log('Post unliked successfully:', response.data);
 

@@ -104,34 +104,31 @@ const getPostsByUserId = async (req, res) => {
   }
 };
 
-///Delete Post
+/// Delete Post
 const deletePost = async (req, res) => {
   try {
-    const { postId, userId } = req.params; // Get postId and userId from route parameters
+    const { postId, userId } = req.params;
 
     const pool = await mssql.connect(sqlConfig);
-
-    // Corrected SQL DELETE statement
-    const query = `DELETE FROM posts WHERE postId = @postId`;
-
-    // Use input for both postId and userId
     const result = await pool
       .request()
-      .input('postId', mssql.VarChar, postId)
-      .input('userId', mssql.VarChar, userId)
-      .query(query);
+      .input('postId', postId)
+      .input('userId', userId)
+      .execute('DeletePostAndLikes');
 
-    // Check if any rows were affected to determine if the post was deleted
-    if (result.rowsAffected[0] === 0) {
-      return res.status(404).json({ error: 'Post not found or you do not have permission to delete it.' });
+    // Check the result for success or error message
+    if (result.recordset[0] && result.recordset[0].Message) {
+      const successMessage = "Post deleted successfully.";
+      res.status(200).json({ message: successMessage });
+    } else {
+      res.status(500).json({ error: 'Error deleting post and associated likes' });
     }
-
-    return res.status(200).json({ message: 'Post deleted successfully' });
   } catch (error) {
-    console.error('Error deleting post by postId:', error);
-    return res.status(500).json({ error: 'An error occurred while deleting the post.' });
+    console.error('An error occurred:', error);
+    res.status(500).json({ error: 'An error occurred while deleting the post.' });
   }
 };
+
 
 
 ////update post

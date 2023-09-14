@@ -1,4 +1,19 @@
 ///profile info
+document.addEventListener("DOMContentLoaded", function () {
+
+  const postsBtn = document.querySelector(".postsBtn");
+  const commentsBtn = document.querySelector(".commentsBtn");
+  const likesBtn = document.querySelector(".likesBtn");
+  const followersBtn = document.querySelectorAll('.followersBtn');
+  const followingBtn = document.querySelector(".followingBtn");
+
+  const postsContainer = document.querySelector(".postsContainer");
+  const commentsContainer = document.querySelector(".commentContainer");
+  const likesContainer = document.querySelector(".likesContainer");
+  const followersTable = document.querySelector(".followersContainer");
+  const followingTable = document.querySelector(".followingContainer");
+  
+
 const userId = localStorage.id;
 const token = localStorage.token;
 
@@ -32,6 +47,13 @@ axios
           <img src="./Images/mdi_pencil-outline.png" alt="" style="height: 3vh; width: 3vh;">
         </a>
       </div>
+      
+      <div class="profilePic">
+      <h3>
+          <a href="#" class="followersBtn">${userData.numFollowers} Followers</a>
+          <a href="#" class="followingBtn">${userData.numFollowing} Following</a>
+      </h3>
+      </div>
     `;
 
     // Set the innerHTML of the profilePic element
@@ -42,21 +64,39 @@ axios
   });
 
 
+  // JavaScript (place this at the end of your HTML body)
+document.addEventListener("DOMContentLoaded", function () {
+  const modal = document.getElementById("myModal");
+  const editButton = document.querySelector(".updateCommentBtn");
+  const closeButton = document.querySelector(".close");
+
+  // Function to open the modal
+  function openModal() {
+    modal.style.display = "block";
+  }
+
+  // Function to close the modal
+  function closeModal() {
+    modal.style.display = "none";
+  }
+
+  // Event listener to open the modal when the "Edit" button is clicked
+  editButton.addEventListener("click", openModal);
+
+  // Event listener to close the modal when the close button is clicked
+  closeButton.addEventListener("click", closeModal);
+
+  // Event listener to close the modal when clicking outside the modal
+  window.addEventListener("click", function (event) {
+    if (event.target == modal) {
+      closeModal();
+    }
+  });
+});
+
+
 
 // Fetch all posts
-document.addEventListener("DOMContentLoaded", function () {
-  const postsBtn = document.querySelector(".postsBtn");
-  const commentsBtn = document.querySelector(".commentsBtn");
-  const likesBtn = document.querySelector(".likesBtn");
-  const followersBtn = document.querySelector('.followersBtn');
-  const followingBtn = document.querySelector(".followingBtn");
-
-  const postsContainer = document.querySelector(".postsContainer");
-  const commentsContainer = document.querySelector(".commentContainer");
-  const likesContainer = document.querySelector(".likesContainer");
-  const followersTable = document.querySelector(".followersContainer");
-  const followingTable = document.querySelector(".followingContainer");
-  
   // Initially, hide the Comments and Likes containers
   postsContainer.style.display = "block";
   commentsContainer.style.display = "none";
@@ -114,10 +154,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     <h5>${user.name}</h5>
                     <p>@${user.username}</p>
                   </div>
-                  <a href="#" class="deletePost" data-userid="${user.userId}" data-commentid="${post.postId}">
-                  <img src="./Images/icons8-delete-24.png" height="12vh" width="10vh"  alt="Delete">
-                </a>
-                <a href="#" class="updatePost" data-userid="${user.userId}" data-commentid="${post.postId}">
+                  <a href="#" class="deletePostBtn" data-userid="${user.id}" data-postid="${post.postId}">
+                    <img src="./Images/icons8-delete-24.png" height="12vh" width="10vh"  alt="Delete">
+                  </a>
+
+                <a href="#" class="updatePostBtn" data-userid="${user.id}" data-commentid="${post.postId}">
                   <img src="./Images/mdi_pencil-outline.png" height="12vh" width="10vh"  alt="Edit">
                 </a>
 
@@ -144,10 +185,10 @@ document.addEventListener("DOMContentLoaded", function () {
                       <h5>${user.name}</h5>
                       <p>@${user.username}</p>
                     </div>
-                    <a href="#" class="deletePost" data-userid="${user.userId}" data-commentid="${post.postId}">
+                    <a href="#" class="deletePostBtn" data-userid="${user.id}" data-postid="${post.postId}">
                     <img src="./Images/icons8-delete-24.png" height="12vh" width="10vh"  alt="Delete">
                   </a>
-                  <a href="#" class="updatePost" data-userid="${user.userId}" data-commentid="${post.postId}">
+                  <a href="#" class="updatePostBtn" data-userid="${user.id}" data-postid="${post.postId}">
                     <img src="./Images/mdi_pencil-outline.png" height="12vh" width="10vh"  alt="Edit">
                   </a>                  </div>
                   <div class="postContent">
@@ -173,6 +214,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
                   // Append the postElement to postContainer
                   postContainer.appendChild(postElement);
+
+              
+                  // Add an event listener to the Delete Post button for each follower
+        const deletePostBtn = postElement.querySelector(".deletePostBtn");
+        deletePostBtn.addEventListener("click", () => {
+          const postId = post.postId;
+          toggleDeletePost(postId);
+        });
+
                 })
                 .catch((err) => {
                   console.log(err);
@@ -246,10 +296,10 @@ document.addEventListener("DOMContentLoaded", function () {
                       <h5>${user.name}</h5>
                       <p>@${user.username}</p>
                     </div>
-                    <a href="#" class="deleteComment" data-userid="${user.userId}" data-commentid="${alluserComments.postId}">
+                    <a href="#" class="deleteCommentBtn" data-userid="${user.userId}" data-commentid="${alluserComments.postId}">
                       <img src="./Images/icons8-delete-24.png" height="12vh" width="10vh"  alt="Delete">
                     </a>
-                    <a href="#" class="updateComment" data-userid="${user.userId}" data-commentid="${alluserComments.postId}">
+                    <a href="#" class="updateCommentBtn" data-userid="${user.userId}" data-commentid="${alluserComments.postId}">
                       <img src="./Images/mdi_pencil-outline.png" height="12vh" width="10vh"  alt="Edit">
                     </a>
   
@@ -276,10 +326,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         <h5>${user.name}</h5>
                         <p>@${user.username}</p>
                       </div>
-                      <a href="#" class="deleteComment" data-userid="${user.userId}" data-commentid="${alluserComments.postId}">
+                      <a href="#" class="deleteCommentBtn" data-userid="${user.userId}" data-commentid="${alluserComments.commentId}" data-postId="${alluserComments.postId}">
                       <img src="./Images/icons8-delete-24.png" height="12vh" width="10vh"  alt="Delete">
                     </a>
-                    <a href="#" class="updateComment" data-userid="${user.userId}" data-commentid="${alluserComments.postId}">
+                    <a href="#" class="updateCommentBtn" data-userid="${user.userId}"  >
                       <img src="./Images/mdi_pencil-outline.png" height="12vh" width="10vh"  alt="Edit">
                     </a>
                     </div>
@@ -302,6 +352,16 @@ document.addEventListener("DOMContentLoaded", function () {
   
                   // Append the commentElement to postContainer
                   postContainer.appendChild(commentElement);
+
+
+           // Add an event listener to the Delete Comment button for each follower
+           const deleteCommentBtn = commentElement.querySelector(".deleteCommentBtn");
+           deleteCommentBtn.addEventListener("click", () => {
+             const postId = alluserComments.postId;
+             const commentId = alluserComments.commentId;
+             toggleDeleteComment(postId, commentId);
+           });
+
                 })
                 .catch((err) => {
                   console.log(err);
@@ -421,6 +481,7 @@ document.addEventListener("DOMContentLoaded", function () {
   
                   // Append the commentElement to postContainer
                   postContainer.appendChild(commentElement);
+                  
                 })
                 .catch((err) => {
                   console.log(err);
@@ -470,8 +531,10 @@ function toggleFollowState(button, personId) {
     });
 }
 
+
+
 // Add an event listener to the "Followers" button
-followersBtn.addEventListener("click", () => {
+followersBtn.addEventListener("click", function () {
   const followersTable = document.querySelector('.followersContainer ');
 
   // Clear any existing data in the table
@@ -579,49 +642,49 @@ followingBtn.addEventListener('click', () => {
   });
   
 
+function toggleDeletePost(postId) {
+  const userId = localStorage.id
+    const token = localStorage.token;
 
-  // Event listener for deleting a post
-document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('deletePost')) {
-    e.preventDefault();
-    const postId = e.target.dataset.postid;
-    const userId = localStorage.id; // Assuming you have the user's ID
-    const token = localStorage.token; // Assuming you have the user's token
-
-    // Send a DELETE request to delete the post
-    const axiosConfig = {
-      headers: {
-        'Content-Type': 'application/json',
-        token: token,
-      },
-    };
-
-    axios.delete(`http://localhost:5000/posts/deletepost/${userId}/${postId}`, axiosConfig)
-      .then((response) => {
-        // Handle successful deletion
-        console.log('Post deleted successfully:', response.data);
-
-        // Assuming you want to remove the post from the UI, you can find the postElement and remove it here
-        const postElement = document.querySelector(`[data-postid="${postId}"]`);
-        if (postElement) {
-          postElement.remove();
+    axios.delete(`http://localhost:5000/posts/deletepost/${userId}/${postId}`, {
+        headers: {
+            "Accept": "application/json",
+            "Content-type": "application/json",
+            "token": token
         }
-      })
-      .catch((error) => {
-        console.error('Error deleting the post:', error);
-      });
-  }
-});
+    })
+        .then((response) => {
+          console.log(postId, userId);
 
-// Event listener for updating a post
-document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('updatePost')) {
-    e.preventDefault();
-    const postId = e.target.dataset.postid;
+            console.log("Post deleted:", response.data);
+            window.location.reload();
+        })
+        .catch((error) => {
+            console.error('An error occurred:', error);
+        });
+}
 
-    // Implement your logic to open an update post modal or navigate to an update page with postId
-    // Example: window.location.href = `/updatePost.html?postId=${postId}`;
-  }
-});
+
+function toggleDeleteComment(postId, commentId) {
+  const userId = localStorage.id
+    const token = localStorage.token;
+
+    axios.delete(`http://localhost:5000/comments/deletecomment/${userId}/${postId}/${commentId}`, {
+        headers: {
+            "Accept": "application/json",
+            "Content-type": "application/json",
+            token: token
+        }
+    })
+        .then((response) => {
+          console.log(postId, userId);
+
+            console.log("Comment deleted:", response.data);
+            window.location.reload();
+        })
+        .catch((error) => {
+            console.error('An error occurred:', error);
+        });
+}
 
 })

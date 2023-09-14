@@ -93,17 +93,19 @@ const allCommentsByuserId = async (req, res) => {
 //Delete comment
 const deleteComment = async (req, res) => {
   try {
-    const { commentId } = req.params; // Get commentId from route parameters
+    const { userId ,commentId, postId } = req.params; // Get commentId from route parameters
 
     const pool = await mssql.connect(sqlConfig);
 
     // Use input only for commentId
-    const query = `EXEC DeleteComment @commentId`;
+    // const query = `EXEC DeleteComment @commentId`;
 
     const result = await pool
       .request()
-      .input('commentId', mssql.VarChar, commentId)
-      .query(query);
+      .input('userId', userId)
+      .input('postId', postId)
+      .input('commentId',  commentId)
+      .execute('DeleteComment');
 
     // Check if any rows were affected to determine if the comment was deleted
     if (result.returnValue === 0) {

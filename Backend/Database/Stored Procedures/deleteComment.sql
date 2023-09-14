@@ -1,6 +1,7 @@
 CREATE OR ALTER PROCEDURE DeleteComment
     @commentId VARCHAR(200),
-    @postId VARCHAR(200)
+    @postId VARCHAR(200),
+    @userId VARCHAR(200)
 AS
 BEGIN
     BEGIN TRY

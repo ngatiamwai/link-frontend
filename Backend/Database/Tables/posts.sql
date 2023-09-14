@@ -15,8 +15,6 @@ THROW 50001, 'Error occured when creating post table', 1 ;
 END CATCH
 
 
-SELECT * FROM posts
-
 BEGIN TRY
 ALTER TABLE posts
 ADD numComments INT DEFAULT 0, -- Default value is 0
@@ -25,3 +23,6 @@ END TRY
 BEGIN CATCH
 THROW 50002, 'Error occurred when altering posts table', 1;
 END CATCH
+
+
+SELECT * FROM posts
