@@ -11,7 +11,7 @@ body, p {
     padding: 0;
 }
 p{
-    color:rgba(0, 0, 0, 0.5) ;
+    color:rgba(0, 0, 0, 0.7) ;
 }
 .main {
     position: fixed;
@@ -47,7 +47,7 @@ p{
     margin-left: 70vh;
     margin-right: 70vh;
 }
-.registerForm{
+.registerForm, .updateComment, .updatePost{
     display: flex;
     flex-direction: column;
     gap: 3vh;
@@ -180,8 +180,8 @@ header {
     flex-direction: column;
 }
 .postContent>img{
-    height: 40vh;
-    width: 97vh;
+    height: 100%;
+    width: 100%;
     border: 1px solid rgba(32, 115, 120, 1);
     border-radius: 1vh;
     margin-bottom: 2vh;
@@ -455,6 +455,7 @@ th, td {
     
     .postContent > img {
         max-width: 100%; 
+        max-height: 100%;
         border: 1px solid rgba(32, 115, 120, 1);
         border-radius: 1vh;
         margin-bottom: 2vh;

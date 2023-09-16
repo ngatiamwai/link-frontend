@@ -14,3 +14,6 @@ THROW 50001, 'Error occured when creating post table', 1 ;
 END CATCH
 
 SELECT * FROM comments
+
+DELETE FROM comments
+WHERE commentId = '9faa8556-be3f-4ed6-bff6-d15193f7d6c8';

@@ -48,7 +48,12 @@
                     <div class="profilePic">
                         
                     </div>
-                    
+                    <div class="profilePic">
+                        <h3>
+                            <a href="#" ><span class="followersBtn"></span> Followers</a>
+                            <a href="#"> <span class="followingBtn"></span> Following</a>
+                        </h3>
+                    </div>
                     <div class="profilePic">
                         <h2>
                             
@@ -88,29 +93,115 @@
 
                 </div>
             </div>
-            <div class="editContainer">
+            <div class="editPostContainer">
                 <div class="post">
+                <!-- The Modal -->
+                <div id="updatePostModal" class="modal" style="display: none;">
+                    <!-- Modal content -->
+                    <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <form class="updatePost" action="">
+                        <h2>Update Post</h2>
+                        <p class="errorMsg"></p>
+                        <input type="text" class="postName" placeholder="Post Text">
+                        <input type="file" class ="postPic" id="">
+                        <button class="submit" type="submit">Update Post</button>
+                    </form>
+                    </div>
+                </div>
+  
 
                 </div>
             </div>
 
-            <!-- Modal HTML (place this where you want your modal to appear) -->
-<div id="myModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <!-- Place your edit form or content here -->
-      <p>Edit Post:</p>
-      <!-- Sample edit form -->
-      <form id="editForm">
-        <!-- Add your input fields and submit button here -->
-      </form>
-    </div>
-  </div>
+            <div class="editCommentContainer">
+                <div class="post">
+                <!-- The Modal -->
+                <div id="updateCommentModal" class="modal" style="display: none;">
+                    <!-- Modal content -->
+                    <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <form class="updateComment" action="">
+                        <h2>Update Comment</h2>
+                        <p class="errorMsg"></p>
+                        <input type="text" class="commentText" placeholder="CommentText">
+                        <input type="file" class ="commentPic" id="">
+                        <button class="submit" type="submit">Update Comment</button>
+                    </form>
+                    </div>
+                </div>
+  
+
+                </div>
+            </div>
 
 
         </div>
     </div>
 </body>
 <script src="./account.js" defer></script>
+<style>
+    /* The Modal (background) */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: rgba(0, 0, 0, 0.7); /* Dark grey background with transparency */
+      animation: fadeIn 0.3s; /* Fade-in animation */
+    }
+  
+    /* Modal Content/Box */
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 50%;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      transform: scale(0.8); /* Initial scale for zoom-in effect */
+      animation: zoomIn 0.3s; /* Zoom-in animation */
+      border-radius: 2%;
+    }
+  
+    /* Close Button */
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+  
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  
+    /* Keyframes for animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.8);
+      }
+      to {
+        transform: scale(1);
+      }
+    }
+  </style>
+  
 
 </html>

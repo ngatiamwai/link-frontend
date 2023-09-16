@@ -18,8 +18,10 @@ uploadInput.addEventListener('change', (event) => {
 });
 
 
+
 ///The selected comment on the comment page
-const userId = localStorage.ownersPostId;
+const userId = localStorage.id
+const ownersPostId = localStorage.ownersPostId;
 const postId = localStorage.postId;
 const token = localStorage.token;
 
@@ -33,16 +35,11 @@ if (postId) {
     axios
         .get(`http://localhost:5000/posts/onepost/${postId}`, axiosConfig) // Pass the axiosConfig
         .then((response) => {
-
-       
-
             if (response.data) {
-
-
 
                 // Fetch user information for the post
                 axios
-                    .post(`http://localhost:5000/user/oneUser/${userId}`)
+                    .post(`http://localhost:5000/user/oneUser/${ownersPostId}`)
                     .then((userResponse) => {
                         const user = userResponse.data.user;
                         console.log(user);
@@ -51,7 +48,6 @@ if (postId) {
                         postElement.classList.add('post');
                         const res = response.data;
                         const post = (res.post)[0]
-                        
 
                         console.log(post);
 
@@ -167,17 +163,37 @@ const commentText = document.querySelector(".commentText")
 const commentPic = document.querySelector(".commentPic")
 const errorMsg = document.querySelector(".errorMsg")
 
+let uploadImageUrl = ''
+
+commentPic.addEventListener('change', (event) => {
+    const target = event.target
+    const files = target.files
+    if (files) {
+        const formData = new FormData()
+        formData.append("file", files[0])
+        formData.append("upload_preset", "Shoppie")
+        formData.append("cloud_name", "dhgs8thzx")
+
+        fetch('https://api.cloudinary.com/v1_1/dhgs8thzx/image/upload', {
+            method: 'POST',
+            body: formData
+        }).then((res) => res.json()).then(res => uploadImageUrl = res.url)
+    }
+})
+
+
 registerForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
     let comment =
-        commentText.value !== ""
+        commentText.value !== "" && uploadImageUrl
         
     if (comment) {
         axios
             .post(`http://localhost:5000/comments/comment/${userId}/${postId}`,
                 {
                     commentText: commentText.value,
+                    commentPic: uploadImageUrl
                 },
                 {
                     headers: {
@@ -294,30 +310,31 @@ axios
                 </div>
               `;
 
-              // If post.postPic exists, append the image to postContent
-              if (allPostsComments.postPic) {
-                postContent = `
-                  <div class="home">
-                    <div class="profilePic">
-                      <div> <img src="${user.profilePic}" alt=""> </div>
-                      <div class="profileName">
-                        <h5>${user.name}</h5>
-                        <p>@${user.username}</p>
-                      </div>
-                    </div>
-                    <div class="postContent">
-                      <img src="${allPostsComments.postPic}" alt="">
-                      <p>${allPostsComments.commentText}</p>
-                    </div>
-                    <div class="reactions">
-                      <a href="#" class="commentLink"> <!-- Use "#" as a placeholder -->
-                        <img src="./Images/ei_comment.png" alt="comment">
-                      </a>
-                      <img src="./Images/iconamoon_like-thin.png" alt="like">
-                    </div>
-                  </div>
-                `;
-              }
+           // If post.postPic exists, append the image to postContent
+if (allPostsComments.commentPic) {
+  postContent = `
+    <div class="home">
+      <div class="profilePic">
+        <div> <img src="${user.profilePic}" alt=""> </div>
+        <div class="profileName">
+          <h5>${user.name}</h5>
+          <p>@${user.username}</p>
+        </div>
+      </div>
+      <div class="postContent">
+        <img src="${allPostsComments.commentPic}" alt="">
+        <p>${allPostsComments.commentText}</p>
+      </div>
+      <div class="reactions">
+        <a href="#" class="commentLink"> <!-- Use "#" as a placeholder -->
+          <img src="./Images/ei_comment.png" alt="comment">
+        </a>
+        <img src="./Images/iconamoon_like-thin.png" alt="like">
+      </div>
+    </div>
+  `;
+}
+
 
               // Set the post content
               postElement.innerHTML = postContent;

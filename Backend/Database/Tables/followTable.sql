@@ -8,3 +8,5 @@ CREATE TABLE Follow (
 
 
 SELECT * FROM Follow
+
+DROP TABLE Follow

@@ -1,10 +1,11 @@
 ///profile info
 document.addEventListener("DOMContentLoaded", function () {
 
+
   const postsBtn = document.querySelector(".postsBtn");
   const commentsBtn = document.querySelector(".commentsBtn");
   const likesBtn = document.querySelector(".likesBtn");
-  const followersBtn = document.querySelectorAll('.followersBtn');
+  const followersBtn = document.querySelector('.followersBtn');
   const followingBtn = document.querySelector(".followingBtn");
 
   const postsContainer = document.querySelector(".postsContainer");
@@ -48,13 +49,11 @@ axios
         </a>
       </div>
       
-      <div class="profilePic">
-      <h3>
-          <a href="#" class="followersBtn">${userData.numFollowers} Followers</a>
-          <a href="#" class="followingBtn">${userData.numFollowing} Following</a>
-      </h3>
-      </div>
     `;
+    // console.log(document.querySelector('.followersBtn'));
+    document.querySelector('.followersBtn').innerHTML += (userData.numFollowers || 0)
+    // document.querySelector('.followingBtn').appendChild(userData.numFollowing)
+    document.querySelector('.followingBtn').innerHTML += (userData.numFollowing || 0)
 
     // Set the innerHTML of the profilePic element
     profilePicElement.innerHTML = postContent;
@@ -62,38 +61,6 @@ axios
   .catch((err) => {
     console.log(err);
   });
-
-
-  // JavaScript (place this at the end of your HTML body)
-document.addEventListener("DOMContentLoaded", function () {
-  const modal = document.getElementById("myModal");
-  const editButton = document.querySelector(".updateCommentBtn");
-  const closeButton = document.querySelector(".close");
-
-  // Function to open the modal
-  function openModal() {
-    modal.style.display = "block";
-  }
-
-  // Function to close the modal
-  function closeModal() {
-    modal.style.display = "none";
-  }
-
-  // Event listener to open the modal when the "Edit" button is clicked
-  editButton.addEventListener("click", openModal);
-
-  // Event listener to close the modal when the close button is clicked
-  closeButton.addEventListener("click", closeModal);
-
-  // Event listener to close the modal when clicking outside the modal
-  window.addEventListener("click", function (event) {
-    if (event.target == modal) {
-      closeModal();
-    }
-  });
-});
-
 
 
 // Fetch all posts
@@ -128,6 +95,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
           if (!Array.isArray(posts) && response.data.posts) {
             posts = response.data.posts;
+          }else{
+              console.log("No posts");
           }
 
           console.log(posts);
@@ -221,6 +190,36 @@ document.addEventListener("DOMContentLoaded", function () {
         deletePostBtn.addEventListener("click", () => {
           const postId = post.postId;
           toggleDeletePost(postId);
+        });
+
+
+        const updatePostBtn = postElement.querySelector(".updatePostBtn");
+        updatePostBtn.addEventListener("click", ()=>{
+          const postId = post.postId;
+          toggleUpdatePost(postId);
+        })
+
+        // Get the modal element by its id
+        const updatePostModal = document.querySelector('#updatePostModal');
+
+        // Get the <span> element that closes the modal
+        const closeModal = updatePostModal.querySelector('.close');
+
+        // When the user clicks on the "updatePostBtn," open the modal
+        updatePostBtn.addEventListener('click', () => {
+          updatePostModal.style.display = 'block';
+        });
+
+        // When the user clicks on the <span> (x), close the modal
+        closeModal.addEventListener('click', () => {
+          updatePostModal.style.display = 'none';
+        });
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.addEventListener('click', (event) => {
+          if (event.target === updatePostModal) {
+            updatePostModal.style.display = 'none';
+          }
         });
 
                 })
@@ -329,7 +328,7 @@ document.addEventListener("DOMContentLoaded", function () {
                       <a href="#" class="deleteCommentBtn" data-userid="${user.userId}" data-commentid="${alluserComments.commentId}" data-postId="${alluserComments.postId}">
                       <img src="./Images/icons8-delete-24.png" height="12vh" width="10vh"  alt="Delete">
                     </a>
-                    <a href="#" class="updateCommentBtn" data-userid="${user.userId}"  >
+                    <a href="#" class="updateCommentBtn" data-userid="${user.userId}"  data-commentId ="${alluserComments.commentId}" data-postId="${alluserComments.postId}">
                       <img src="./Images/mdi_pencil-outline.png" height="12vh" width="10vh"  alt="Edit">
                     </a>
                     </div>
@@ -361,6 +360,38 @@ document.addEventListener("DOMContentLoaded", function () {
              const commentId = alluserComments.commentId;
              toggleDeleteComment(postId, commentId);
            });
+
+
+           // Get the button that opens the modal
+            const updateCommentBtn = commentElement.querySelector('.updateCommentBtn');
+            updateCommentBtn.addEventListener("click", ()=>{
+              const commentId = alluserComments.commentId
+              toggleUpdateComment(commentId)
+            })
+            // Get the modal element by its id
+            const updateCommentModal = document.querySelector('#updateCommentModal');
+
+            // Get the <span> element that closes the modal
+            const closeModal = updateCommentModal.querySelector('.close');
+
+            // When the user clicks on the "updateCommentBtn," open the modal
+            updateCommentBtn.addEventListener('click', () => {
+              updateCommentModal.style.display = 'block';
+            });
+
+            // When the user clicks on the <span> (x), close the modal
+            closeModal.addEventListener('click', () => {
+              updateCommentModal.style.display = 'none';
+            });
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.addEventListener('click', (event) => {
+              if (event.target === updateCommentModal) {
+                updateCommentModal.style.display = 'none';
+              }
+            });
+
+
 
                 })
                 .catch((err) => {
@@ -686,5 +717,109 @@ function toggleDeleteComment(postId, commentId) {
             console.error('An error occurred:', error);
         });
 }
+
+
+function toggleUpdateComment(commentId) {
+  // Get references to modal elements
+  const modal = document.getElementById("updateCommentModal");
+  const commentTextElement = modal.querySelector(".commentText");
+  const commentPicElement = modal.querySelector('.commentPic')
+  const errorMsgElement = modal.querySelector(".errorMsg");
+  const updateCommentForm = modal.querySelector(".updateComment");
+
+  // Open the modal
+  modal.style.display = "block";
+
+  // Add an event listener to the "Update Comment" form
+  updateCommentForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    // Get the updated comment text
+    const updatedCommentText = commentTextElement.value;
+    const updatedCommentPic = commentPicElement.value
+
+    // Send a POST request to update the comment
+    const token = localStorage.token;
+
+    const axiosConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+        token: token,
+      },
+    };
+
+    const updateData = {
+      commentText: updatedCommentText,
+      commentPic: updatedCommentPic
+    };
+
+    axios
+      .post(`http://localhost:5000/comments/updatecomment/${commentId}`, updateData, axiosConfig)
+      .then((response) => {
+        console.log(response);
+        console.log('Comment updated successfully:', response.data);
+
+        modal.style.display = "none";
+
+      })
+      .catch((error) => {
+        console.error('Error updating the comment:', error);
+        errorMsgElement.innerText = "Error updating the comment. Please try again.";
+      });
+  });
+}
+
+
+function toggleUpdatePost(postId) {
+  // Get references to modal elements
+  const modal = document.getElementById("updatePostModal");
+  const postTextElement = modal.querySelector(".postName");
+  const postPicElement = modal.querySelector('.postPic')
+  const errorMsgElement = modal.querySelector(".errorMsg");
+  const updatePost = modal.querySelector(".updatePost");
+
+  // Open the modal
+  modal.style.display = "block";
+
+  // Add an event listener to the "Update post" form
+  updatePost.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    // Get the updated post text
+    const updatedpostText = postTextElement.value;
+    const updatedpostPic = postPicElement.value
+
+    // Send a POST request to update the post
+    const token = localStorage.token;
+
+    const axiosConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+        token: token,
+      },
+    };
+
+    const updateData = {
+      postName: updatedpostText,
+      postPic: updatedpostPic
+    };
+
+    axios
+      .post(`http://localhost:5000/posts/updatepost/${postId}`, updateData, axiosConfig)
+      .then((response) => {
+        console.log(response);
+        console.log('post updated successfully:', response.data);
+
+        modal.style.display = "none";
+
+      })
+      .catch((error) => {
+        console.error('Error updating the post:', error);
+        errorMsgElement.innerText = "Error updating the post. Please try again.";
+      });
+  });
+}
+
+
 
 })

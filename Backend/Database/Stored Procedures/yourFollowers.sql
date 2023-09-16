@@ -5,8 +5,8 @@ BEGIN
     SELECT F.followingId, U.name, U.username, U.profilePic
     FROM Follow F
     INNER JOIN userTable U ON F.followingId = U.id
-    WHERE F.followerId = @followerId;
+    WHERE F.followingId = @followerId;
 END
 
 
-DROP PROC GetPeopleYouAreFollowing
+-- DROP PROC GetPeopleYouAreFollowing

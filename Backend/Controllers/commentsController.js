@@ -11,7 +11,9 @@ const createComment = async (req, res, next) => {
     const { userId, postId } = req.params;
     const { commentText, commentPic } = req.body;
 
-    if (!commentText || !userId || !postId) {
+    console.log(userId, postId, commentText, commentPic);
+
+    if (!commentText || !userId || !postId || !commentPic) {
       return res.status(400).json({
         error: 'Please provide commentText, userId, and postId.',
       });
@@ -19,19 +21,16 @@ const createComment = async (req, res, next) => {
 
     const pool = await mssql.connect(sqlConfig);
 
-    const request = pool.request();
-    request.input('commentId', mssql.VarChar, commentId);
-    request.input('commentText', mssql.VarChar, commentText);
-    request.input('commentPic', mssql.VarChar, commentPic || null); // Use null if commentPic is not provided
-    request.input('userId', mssql.VarChar, userId);
-    request.input('postId', mssql.VarChar, postId);
+    const response = await pool.request()
+    .input('commentId',  commentId)
+    .input('commentText',  commentText)
+    .input('commentPic',  commentPic) // Use null if commentPic is not provided
+    .input('userId',  userId)
+    .input('postId',  postId)
+    .execute('createComment')
 
-    // Insert the comment into the comments table
-    const result = await request.query(`
-      EXEC createComment @commentId, @commentText, @commentPic, @userId, @postId
-    `);
 
-    if (result.returnValue === 0) {
+    if (response.rowsAffected[0] == 1) {
       return res.status(200).json({ message: 'Comment uploaded successfully' });
     } else {
       return res.status(400).json({ message: 'Comment upload failed' });
@@ -148,10 +147,13 @@ const subComment = async (req, res) => {
       .execute('insertSubComment'); 
 
     if (result.rowsAffected[0] === 1) {
+      console.log(result);
       return res.status(201).json({ message: 'Sub-comment inserted successfully' });
     } else {
       return res.status(500).json({ error: 'Failed to insert sub-comment' });
+      
     }
+    
   } catch (error) {
     console.error('Error inserting sub-comment:', error);
     return res.status(500).json({ error: 'Internal server error' });
@@ -169,17 +171,12 @@ const updateComment = async (req, res) => {
 
     const pool = await mssql.connect(sqlConfig);
 
-    const request = pool.request();
-    request.input('commentId', commentId);
-    request.input('commentText', commentText);
-    request.input('commentPic', commentPic);
-
-    // Create the SQL query to call the stored procedure
-    const query = `
-      EXEC UpdateComment @commentId, @commentText, @commentPic
-    `;
-
-    const result = await request.query(query);
+    const result = await pool
+    .request()
+    .input('commentId', commentId)
+    .input('commentText', commentText)
+    .input('commentPic', commentPic)
+    .execute('UpdateComment')
 
     if (result.rowsAffected[0] === 1) {
       return res.status(200).json({ message: 'Comment updated successfully' });
