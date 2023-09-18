@@ -31,6 +31,19 @@ axios
       <div>
       </div>
     `;
+        // console.log(document.querySelector('.followersBtn'));
+        document.querySelector('.followersBtn').innerHTML += (userData.numFollowers || 0)
+        // document.querySelector('.followingBtn').appendChild(userData.numFollowing)
+        document.querySelector('.followingBtn').innerHTML += (userData.numFollowing || 0)
+
+             // Assuming you have the user's profile image URL stored in a variable, e.g., userProfileImageUrl
+const userProfileImageUrl = `${userData.profilePic}`;
+
+// Get a reference to the img element by its class name
+const navImageElement = document.querySelector('.navImage');
+
+// Set the src attribute of the img element to the user's profile image URL
+navImageElement.src = userProfileImageUrl;
 
     // Set the innerHTML of the profilePic element
     profilePicElement.innerHTML = postContent;
@@ -120,9 +133,11 @@ document.addEventListener("DOMContentLoaded", function () {
                   <p>${post.postName}</p>
                 </div>
                 <div class="reactions">
+                ${post.numLikes}
                   <a href="./comments.html">
                     <img src="./Images/ei_comment.png" alt="comment">
                   </a>
+                  ${post.numComments}
                   <img src="./Images/iconamoon_like-thin.png" alt="like">
                 </div>
               </div>
@@ -488,26 +503,28 @@ followersBtn.addEventListener("click", () => {
                     <td><img src="${follower.profilePic}" alt="" style="height: 10vh; width: 10vh; border-radius: 100%;"></td>
                     <td>${follower.name}</td>
                     <td>@${follower.username}</td>
-                    <button class="followBtn" data-person-id="${follower.id}"> Follow</button>
+                    <td><button class="followBtn" data-person-id="${follower.id}"> Follow</button></td>
+                  </tr>
         `;
 
         // Append the post to the table
         followersTable.appendChild(post);
 
         // Add an event listener to the follow button for each follower
-        const followButton = post.querySelector(".followBtn");
-        followButton.addEventListener("click", () => {
-          const personId = follower.id;
-          toggleFollowState(followButton, personId);
-        });
+        
       });
     })
     .catch((error) => {
       console.error("Error fetching your followers:", error);
     });
 });
+// section 1
+// const followButton = post.querySelector(".followBtn");
+// followButton.addEventListener("click", () => {
+//   const personId = follower.id;
+//   toggleFollowState(followButton, personId);
+// });
 
-  
   followingBtn.addEventListener('click', () => {
     const followingTable = document.querySelector('.followingContainer');
   
@@ -540,17 +557,17 @@ followersBtn.addEventListener("click", () => {
               <td><img src="${following.profilePic}" alt="" style="height: 10vh; width: 10vh; border-radius: 100%;"></td>
               <td>${following.name}</td>
               <td>@${following.username}</td>
-
+              <td><button class="followBtn"  data-person-id="${following.id}"> Follow</button></td>
   
             `;
     
             followingTable.appendChild(raw);
-             // Add an event listener to the follow button for each follower
-          const followButton = raw.querySelector(".followBtn");
-          followButton.addEventListener("click", () => {
-            const personId = following.id;
-            toggleFollowState(followButton, personId);
-          });
+          // Add an event listener to the follow button for each follower
+           const followButton = raw.querySelector(".followBtn");
+           followButton.addEventListener("click", () => {
+             const personId = following.id;
+             toggleFollowState(followButton, personId);
+           });
           });
         })
         .catch((error) => {
@@ -558,4 +575,36 @@ followersBtn.addEventListener("click", () => {
         });
   });
   
+     // Check if the user is authenticated
+function isAuthenticated() {
+  const token = localStorage.getItem('token'); // Assuming you store the token in localStorage
+  return !!token; // Return true if the token exists, false otherwise
+}
+
+// Redirect to login page if not authenticated
+function redirectToLogin() {
+  if (!isAuthenticated()) {
+    window.location.href = 'login.html';
+  }
+}
+
+// Logout function
+function logout() {
+  // Clear authentication data (e.g., token, user information)
+  localStorage.removeItem('token');
+  // Redirect to the login page
+  window.location.href = 'login.html';
+}
+
+// Add an event listener to the Logout button
+const logoutButton = document.getElementById('logoutButton');
+if (logoutButton) {
+  logoutButton.addEventListener('click', (e) => {
+    e.preventDefault(); // Prevent the default link behavior
+    logout();
+  });
+}
+
+// Call redirectToLogin on pages that require authentication
+redirectToLogin();
 })

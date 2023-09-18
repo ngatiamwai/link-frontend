@@ -113,3 +113,37 @@ registerForm.addEventListener("submit", (e) => {
             });
     }
 });
+
+
+// Check if the user is authenticated
+function isAuthenticated() {
+    const token = localStorage.getItem('token'); // Assuming you store the token in localStorage
+    return !!token; // Return true if the token exists, false otherwise
+  }
+  
+  // Redirect to login page if not authenticated
+  function redirectToLogin() {
+    if (!isAuthenticated()) {
+      window.location.href = 'login.html';
+    }
+  }
+  
+  // Logout function
+  function logout() {
+    // Clear authentication data (e.g., token, user information)
+    localStorage.removeItem('token');
+    // Redirect to the login page
+    window.location.href = 'login.html';
+  }
+  
+  // Add an event listener to the Logout button
+  const logoutButton = document.getElementById('logoutButton');
+  if (logoutButton) {
+    logoutButton.addEventListener('click', (e) => {
+      e.preventDefault(); // Prevent the default link behavior
+      logout();
+    });
+  }
+  
+  // Call redirectToLogin on pages that require authentication
+  redirectToLogin();

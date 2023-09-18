@@ -26,20 +26,26 @@
                 </p>
             </div>
         </div>
-        <input type="text" placeholder="search" class="search">
+        <input type="text" placeholder="search" class="search" oninput="myFunction()">
     </div>
     <div class="header3">
         <div class="dropdown">
-            <button class="dropbtn">Profile</button>
-            <div class="dropdown-content">
-                <a href="account.html">Account</a>
-                <a href="updateProfile.html">Update Profile</a>
-                <a href="login.html" onclick="window.history.back()">Logout</a>
-            </div>
+          <button class="dropbtn"><img src="" alt="" class="navImage"></button>
+          <div class="dropdown-content">
+            <a href="account.html">Account</a>
+            <a href="updateProfile.html">Update Profile</a>
+            <a href="#" id="logoutButton">Logout</a>
+          </div>
         </div>
-    </div>
+      </div>
 </header>
 
+<style>
+    .navImage{
+        height: 3vh;
+        border-radius: 50%;
+    }
+</style>
 <body>
     <div class="homeSection">
         <div class="postSection">
@@ -50,8 +56,8 @@
                     </div>
                     <div class="profilePic">
                         <h3>
-                            <a href="#" class="followersBtn">11 Followers</a>
-                            <a href="#" class="followingBtn">11 Following</a>
+                            <a href="#" ><span class="followersBtn"></span> Followers</a>
+                            <a href="#"> <span class="followingBtn"></span> Following</a>
                         </h3>
                     </div>
                     <div class="profilePic">

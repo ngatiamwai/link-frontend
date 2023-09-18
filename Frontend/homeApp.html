@@ -25,21 +25,81 @@
                 </p>
             </div>
         </div>
-        <input type="text" placeholder="search" class="search">
+        <input type="text" placeholder="search" class="search" oninput="myFunction()">
     </div>
     <div class="header3">
         <div class="dropdown">
-            <button class="dropbtn">Profile</button>
-            <div class="dropdown-content">
-                <a href="account.html">Account</a>
-                <a href="updateProfile.html">Update Profile</a>
-                <a href="login.html" >Logout</a>
-            </div>
+          <button class="dropbtn"><img src="" alt="" class="navImage"></button>
+          <div class="dropdown-content">
+            <a href="account.html">Account</a>
+            <a href="updateProfile.html">Update Profile</a>
+            <a href="#" id="logoutButton">Logout</a>
+          </div>
         </div>
-    </div>
+      </div>
 </header>
 
+<style>
+    .navImage{
+        height: 3vh;
+        border-radius: 50%;
+    }
+</style>
+
 <body>
+<style>
+/* Style the modal container */
+#searchModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  
+  /* Style the modal content */
+  #searchModal .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    position: relative;
+  }
+  
+  /* Style the search results container */
+  #searchModal .search-results {
+    /* Add your styles for the search results here */
+    /* For example, you can set a max height and enable scrolling */
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  /* Zoom-in animation for the modal */
+  #searchModal {
+    animation-name: zoomIn; /* Apply the zoom-in animation */
+    animation-duration: 0.3s; /* Animation duration */
+  }
+  
+  /* Zoom-in animation keyframes */
+  @keyframes zoomIn {
+    from {
+      transform: scale(0.5); /* Initial scale (zoomed out) */
+      opacity: 0; /* Initial opacity (transparent) */
+    }
+    to {
+      transform: scale(1); /* Final scale (normal size) */
+      opacity: 1; /* Final opacity (fully visible) */
+    }
+  }
+  
+</style>
+
+
+
 <div class="homeSection">
     <div class="followSection">
         <h4>Who to follow</h4>
@@ -47,7 +107,14 @@
 
         </div>
         </div>
-
+       <!-- Modal structure -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+      <!-- Search results container -->
+      <div class="search-results"></div>
+    </div>
+  </div>
+  
     <div class="postSection">
         <div class="postContainer">
                 
@@ -55,7 +122,40 @@
     </div>
 
 </div>
-<script src="./home.js" defer></script>
+<script src="./home.js" defer>
+    // Check if the user is authenticated
+function isAuthenticated() {
+    const token = localStorage.getItem('token'); // Assuming you store the token in localStorage
+    return !!token; // Return true if the token exists, false otherwise
+  }
+  
+  // Redirect to login page if not authenticated
+  function redirectToLogin() {
+    if (!isAuthenticated()) {
+      window.location.href = 'login.html';
+    }
+  }
+  
+  // Logout function
+  function logout() {
+    // Clear authentication data (e.g., token, user information)
+    localStorage.removeItem('token');
+    // Redirect to the login page
+    window.location.href = 'login.html';
+  }
+  
+  // Add an event listener to the Logout button
+  const logoutButton = document.getElementById('logoutButton');
+  if (logoutButton) {
+    logoutButton.addEventListener('click', (e) => {
+      e.preventDefault(); // Prevent the default link behavior
+      logout();
+    });
+  }
+  
+  // Call redirectToLogin on pages that require authentication
+  redirectToLogin();
+</script>
 </body>
 
 </html>

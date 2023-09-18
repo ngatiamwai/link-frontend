@@ -24,11 +24,11 @@
                 </p>
             </div>
         </div>
-        <input type="text" placeholder="search" class="search">
+        <input type="text" placeholder="search" class="search" oninput="myFunction()">
     </div>
     <div class="header3">
         <div class="dropdown">
-            <button class="dropbtn">Register</button>
+            <button class="dropbtn"><img src="" alt="" class="navImage"></button>
             <div class="dropdown-content">
                 <a href="register.html">Sign Up</a>
                 <a href="login.html">Log In</a>
@@ -36,10 +36,16 @@
         </div>
     </div>
 </header>
+<style>
+    .navImage{
+        height: 3vh;
+        border-radius: 50%;
+    }
+</style>
 
 <body>
     <div class="homeSection">
-        <div class="followSection">
+        <div class="followSection" style="display: none;">
             <h4>Who to follow</h4>
             <div class="personsToFollowContainer">
     

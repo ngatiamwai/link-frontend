@@ -81,7 +81,7 @@ if (postId) {
                   <a href="#" class="commentLink" data-post-id="${post.postId}">
                     <img src="./Images/ei_comment.png" alt="comment">
                     </a>
-                    
+                    ${post.numLikes}
                   <img src="./Images/iconamoon_like-thin.png" alt="like">
                 </div>
               </div>
@@ -111,11 +111,20 @@ if (postId) {
                     <a href="#" class="commentLink" data-post-id="${post.postId}">
                     <img src="./Images/ei_comment.png" alt="comment">
                     </a>
+                    ${post.numLikes}
                     <img src="./Images/iconamoon_like-thin.png" alt="like">
                   </div>
                 </div>
               `;
                         }
+                             // Assuming you have the user's profile image URL stored in a variable, e.g., userProfileImageUrl
+const userProfileImageUrl = `${user.profilePic}`;
+
+// Get a reference to the img element by its class name
+const navImageElement = document.querySelector('.navImage');
+
+// Set the src attribute of the img element to the user's profile image URL
+navImageElement.src = userProfileImageUrl;
 
                         // Set the post content
                         postElement.innerHTML = postContent;
@@ -223,7 +232,7 @@ registerForm.addEventListener("submit", (e) => {
                         errorMsgElement.textContent = '';
                         errorMsgElement.classList.remove('success');
                         errorMsgElement.classList.remove('error');
-                      }, 2000);
+                      }, 1000);
                     }
                   })
                   .catch((error) => {
@@ -240,8 +249,9 @@ registerForm.addEventListener("submit", (e) => {
                         errorMsgElement.textContent = '';
                         errorMsgElement.classList.remove('success');
                         errorMsgElement.classList.remove('error');
-                      }, 2000);
+                      }, 1000);
                     }
+                    window.location.reload();
                   })
             .catch((error) => {
                 console.error(error);
@@ -373,3 +383,37 @@ if (allPostsComments.commentPic) {
   .catch((error) => {
     console.error('Error fetching posts:', error);
   });
+
+
+  // Check if the user is authenticated
+function isAuthenticated() {
+  const token = localStorage.getItem('token'); // Assuming you store the token in localStorage
+  return !!token; // Return true if the token exists, false otherwise
+}
+
+// Redirect to login page if not authenticated
+function redirectToLogin() {
+  if (!isAuthenticated()) {
+    window.location.href = 'login.html';
+  }
+}
+
+// Logout function
+function logout() {
+  // Clear authentication data (e.g., token, user information)
+  localStorage.removeItem('token');
+  // Redirect to the login page
+  window.location.href = 'login.html';
+}
+
+// Add an event listener to the Logout button
+const logoutButton = document.getElementById('logoutButton');
+if (logoutButton) {
+  logoutButton.addEventListener('click', (e) => {
+    e.preventDefault(); // Prevent the default link behavior
+    logout();
+  });
+}
+
+// Call redirectToLogin on pages that require authentication
+redirectToLogin();

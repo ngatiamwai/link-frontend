@@ -26,20 +26,26 @@
                 </p>
             </div>
         </div>
-        <input type="text" placeholder="search" class="search">
+        <input type="text" placeholder="search" class="search" oninput="myFunction()">
     </div>
     <div class="header3">
         <div class="dropdown">
-            <button class="dropbtn">Profile</button>
-            <div class="dropdown-content">
-                <a href="account.html">Account</a>
-                <a href="updateProfile.html">Update Profile</a>
-                <a href="login.html" onclick="window.history.back()">Logout</a>
-            </div>
+          <button class="dropbtn"><img src="" alt="" class="navImage"></button>
+          <div class="dropdown-content">
+            <a href="account.html">Account</a>
+            <a href="updateProfile.html">Update Profile</a>
+            <a href="#" id="logoutButton">Logout</a>
+          </div>
         </div>
-    </div>
+      </div>
 </header>
 
+<style>
+    .navImage{
+        height: 3vh;
+        border-radius: 50%;
+    }
+</style>
 <body>
     <h4>
         <a href="./homeApp.html" class="backBtn">
@@ -73,93 +79,6 @@
                 
     </div>
 
-    <!-- <div class="post">
-        <div class="home">
-            <div class="profilePic">
-                <div> <img src="./Images/lec 3.jpeg" alt=""> </div>
-                <div class="profileName">
-                    <h5>Ngatia Mwai</h5>
-                    <p>@ngatiamwai</p>
-                </div>
-            </div>
-            <div class="postContent">
-                <img src="./Images/building-patient-doctor-trust.jpg" alt="">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a dui vel turpis tincidunt sollicitudin.
-                    Quisque ut tellus non mi cursus lacinia a ut neque. Sed dictum, velit nec interdum congue, dolor purus
-                    mattis erat, sed vestibulum felis odio sed libero. Vestibulum vel justo vel ex scelerisque iaculis.
-                    Aliquam ultrices convallis quam, vel egestas elit interdum sit amet. Pellentesque habitant morbi
-                    tristique senectus et netus et malesuada fames ac turpis egestas. Fusce vel sapien nec neque bibendum
-                    condimentum. Nulla facilisi. Sed lacinia, nisi in vehicula cursus, nulla libero faucibus nunc, sit amet
-                    malesuada neque neque ac elit. Curabitur gravida libero nec tortor blandit, at faucibus est laoreet. In bibendum feugiat dui, nec
-                    hendrerit quam feugiat nec. Aliquam sit amet dictum metus, vel imperdiet elit. Maecenas placerat enim
-                </p>
-            </div>
-            <div class="reactions">
-                <a href="./comments.html">
-                    <img src="./Images/ei_comment.png" alt="comment">
-                </a>
-                <img src="./Images/iconamoon_like-thin.png" alt="like">
-            </div>
-        </div>
-    </div>
-    <div class="post">
-        <div class="home">
-            <div class="profilePic">
-                <div> <img src="./Images/lec 3.jpeg" alt=""> </div>
-                <div class="profileName">
-                    <h5>Ngatia Mwai</h5>
-                    <p>@ngatiamwai</p>
-                </div>
-            </div>
-            <div class="postContent">
-                !-- <img src="./Images/building-patient-doctor-trust.jpg" alt=""> --
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a dui vel turpis tincidunt sollicitudin.
-                    Quisque ut tellus non mi cursus lacinia a ut neque. Sed dictum, velit nec interdum congue, dolor purus
-                    mattis erat, sed vestibulum felis odio sed libero. Vestibulum vel justo vel ex scelerisque iaculis.
-                    Aliquam ultrices convallis quam, vel egestas elit interdum sit amet. Pellentesque habitant morbi
-                    tristique senectus et netus et malesuada fames ac turpis egestas. Fusce vel sapien nec neque bibendum
-                    condimentum. Nulla facilisi. Sed lacinia, nisi in vehicula cursus, nulla libero faucibus nunc, sit amet
-                    malesuada neque neque ac elit. Curabitur gravida libero nec tortor blandit, at faucibus est laoreet. In bibendum feugiat dui, nec
-                    hendrerit quam feugiat nec. Aliquam sit amet dictum metus, vel imperdiet elit. Maecenas placerat enim
-                </p>
-            </div>
-            <div class="reactions">
-                <a href="./comments.html">
-                    <img src="./Images/ei_comment.png" alt="comment">
-                </a>
-                <img src="./Images/iconamoon_like-thin.png" alt="like">
-            </div>
-        </div>
-    </div>
-    <div class="post">
-        <div class="home">
-            <div class="profilePic">
-                <div> <img src="./Images/lec 3.jpeg" alt=""> </div>
-                <div class="profileName">
-                    <h5>Ngatia Mwai</h5>
-                    <p>@ngatiamwai</p>
-                </div>
-            </div>
-            <div class="postContent">
-                <img src="./Images/building-patient-doctor-trust.jpg" alt="">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a dui vel turpis tincidunt sollicitudin.
-                    Quisque ut tellus non mi cursus lacinia a ut neque. Sed dictum, velit nec interdum congue, dolor purus
-                    mattis erat, sed vestibulum felis odio sed libero. Vestibulum vel justo vel ex scelerisque iaculis.
-                    Aliquam ultrices convallis quam, vel egestas elit interdum sit amet. Pellentesque habitant morbi
-                    tristique senectus et netus et malesuada fames ac turpis egestas. Fusce vel sapien nec neque bibendum
-                    condimentum. Nulla facilisi. Sed lacinia, nisi in vehicula cursus, nulla libero faucibus nunc, sit amet
-                    malesuada neque neque ac elit. Curabitur gravida libero nec tortor blandit, at faucibus est laoreet. In bibendum feugiat dui, nec
-                    hendrerit quam feugiat nec. Aliquam sit amet dictum metus, vel imperdiet elit. Maecenas placerat enim
-                </p>
-            </div>
-            <div class="reactions">
-                <a href="./comments.html">
-                    <img src="./Images/ei_comment.png" alt="comment">
-                </a>
-                <img src="./Images/iconamoon_like-thin.png" alt="like">
-            </div>
-        </div>
-    </div> -->
 </div>
 </body>
 <script src="./comments.js" defer></script>

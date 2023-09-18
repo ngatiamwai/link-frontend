@@ -97,7 +97,7 @@ axios
                   </div>
                   
                   <div class="postContent">
-                    <p>${post.postName}</p>
+<p class="postName">${post.postName}</p>
                   </div>
                   <div class="reactions">
                   ${post.numComments}
@@ -129,7 +129,7 @@ axios
                     </div>
                     <div class="postContent">
                       <img src="${post.postPic}" alt="">
-                      <p>${post.postName}</p>
+                      <p class="postName">${post.postName}</p>
                     </div>
                     <div class="reactions">
                     ${post.numComments}
@@ -144,6 +144,14 @@ axios
                   </div>
                 `;
               }
+                   // Assuming you have the user's profile image URL stored in a variable, e.g., userProfileImageUrl
+const userProfileImageUrl = `${user.profilePic}`;
+
+// Get a reference to the img element by its class name
+const navImageElement = document.querySelector('.navImage');
+
+// Set the src attribute of the img element to the user's profile image URL
+navImageElement.src = userProfileImageUrl;
 
               // Set the post content
               postElement.innerHTML = postContent;
@@ -354,6 +362,74 @@ function unlikePost(postId) {
       console.error('Error unliking the post:', error);
     });
 }
+
+
+function myFunction() {
+  var input, filter, ul, productItems, p, i, txtValue;
+  input = document.querySelector('.search');
+  filter = input.value.toUpperCase();
+  ul = document.querySelector('.postContainer'); // Update to select the post container
+  productItems = ul.querySelectorAll('.home'); // Update to select individual posts
+  const searchResultsContainer = document.querySelector('.search-results'); // Get search results container
+
+  // Clear the previous search results
+  searchResultsContainer.innerHTML = '';
+
+  for (i = 0; i < productItems.length; i++) {
+    p = productItems[i].querySelector('.postContent p'); // Update the selector for the <p> element
+    txtValue = p.textContent || p.innerText;
+
+    if (txtValue.toUpperCase().includes(filter)) {
+      // Clone the matching post and append it to search results
+      const matchingPost = productItems[i].cloneNode(true);
+      searchResultsContainer.appendChild(matchingPost);
+      matchingPost.style.display = 'block'; // Show the matching post in the search results container
+    } else {
+      productItems[i].style.display = 'none'; // Hide non-matching posts in the original container
+    }
+  }
+
+  // Display the search results container at the top or in a modal
+  // You can add your logic here to show the results where you prefer
+  // Example: displayResultsInModal(searchResultsContainer);
+}
+
+// Function to display search results in a modal
+function displayResultsInModal(resultsContainer) {
+  // Get the modal and open it
+  const modal = document.getElementById('searchModal');
+  modal.style.display = 'block';
+
+  // Clear any previous results in the modal
+  modal.querySelector('.search-results').innerHTML = '';
+
+  // Append the search results container to the modal content
+  modal.querySelector('.modal-content').appendChild(resultsContainer);
+}
+
+// Function to close the modal
+function closeModal() {
+  const modal = document.getElementById('searchModal');
+  modal.style.display = 'none';
+
+  // Clear the modal content
+  modal.querySelector('.search-results').innerHTML = '';
+}
+
+// Add an event listener to close the modal when clicking outside of it
+window.addEventListener('click', (event) => {
+  const modal = document.getElementById('searchModal');
+  if (event.target === modal) {
+    closeModal();
+  }
+});
+
+
+
+
+
+
+
 
 
 
