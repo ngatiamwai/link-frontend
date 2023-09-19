@@ -1,15 +1,12 @@
 {
   "name": "frontend",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "",
+  "main": "account.js",
   "scripts": {
-    "test": "cypress open"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "cypress": "^13.2.0"
-  },
-  "description": ""
+  "license": "ISC"
 }

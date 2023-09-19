@@ -1,7 +1,7 @@
-const mssql = require('mssql')
-const dotenv = require('dotenv')
+const mssql = require('mssql');
+const dotenv = require('dotenv');
 
-dotenv.config()
+dotenv.config();
 
 const sqlConfig = {
     user: process.env.DB_USER,
@@ -17,17 +17,19 @@ const sqlConfig = {
         encrypt: false,
         trustServerCertificate: false,
     }
-}
-mssql.connect(sqlConfig)
-    .then(pool => {
-        if (pool.connected) {
-            console.log('connected to db successfully');
-        }
+};
+
+const pool = new mssql.ConnectionPool(sqlConfig);
+
+pool.connect()
+    .then(() => {
+        console.log('Connected to the database successfully');
     })
     .catch(err => {
-        console.error('Error connecting to the database :', err);
+        console.error('Error connecting to the database:', err);
     });
 
 module.exports = {
-    sqlConfig
-}
+    sqlConfig,
+    pool
+};
