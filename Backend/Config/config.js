@@ -19,17 +19,16 @@ const sqlConfig = {
     }
 };
 
-const pool = new mssql.ConnectionPool(sqlConfig);
+// const pool = new mssql.ConnectionPool(sqlConfig);
 
-pool.connect()
-    .then(() => {
-        console.log('Connected to the database successfully');
-    })
-    .catch(err => {
-        console.error('Error connecting to the database:', err);
-    });
+// pool.connect()
+//     .then(() => {
+//         console.log('Connected to the database successfully');
+//     })
+//     .catch(err => {
+//         console.error('Error connecting to the database:', err);
+//     });
 
 module.exports = {
-    sqlConfig,
-    pool
+    sqlConfig
 };

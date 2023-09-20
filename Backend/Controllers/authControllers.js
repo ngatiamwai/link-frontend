@@ -14,7 +14,6 @@ dotenv.config();
 const registerUser = async (req, res) => {
   try {
     
-    console.log(req.body);
   // createUsersTable()
     const id = v4();
     const { name, username, email, password, phone_number } = req.body;
@@ -24,7 +23,8 @@ const registerUser = async (req, res) => {
         error: "Please input all values",
       });
     }
-    
+    console.error('here --sdhs');
+
     const { error } = registerSchema.validate({ name, username, email, password, phone_number });
 
     if (error) {
@@ -44,10 +44,10 @@ const registerUser = async (req, res) => {
       .input("password", mssql.VarChar, hashedPwd)
       .input("phone_number", mssql.Int, phone_number)
       .execute("registerUserProc");
-
     if (result.rowsAffected[0] == 1) {
       return res.status(200).json({ message: "User registered successfully" });
     } else {
+      console.log('result+++>',result);
       return res.status(400).json({ message: "Registration failed" });
     }
   } catch (error) {

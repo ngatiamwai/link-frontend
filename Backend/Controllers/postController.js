@@ -68,16 +68,22 @@ const getOnePost = async (req, res) => {
     // Fetch posts by postId from the posts table
     const query = `SELECT * FROM posts WHERE postId = @postId`;
     const result = await pool.request()
-    .input('postId', mssql.VarChar, postId).query(query);
+      .input('postId', mssql.VarChar, postId)
+      .query(query);
 
-    const post = result.recordset;
+    const posts = result.recordset;
 
-    return res.status(200).json({ post: post });
+    if (posts.length === 0) {
+      return res.status(404).json({ error: 'Post not found' }); // Handle case where post is not found
+    }
+
+    return res.status(200).json({ post: posts[0] }); // Set HTTP status to 200 and return the post
   } catch (error) {
     console.error('Error retrieving post by postId:', error);
     return res.status(500).json({ error: 'An error occurred while retrieving the post.' });
   }
 };
+
 
 
 
